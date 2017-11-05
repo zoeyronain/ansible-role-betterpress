@@ -61,14 +61,19 @@
           when: missingdhparam.stat.exists == False
 
         - name: update cache
+          become: true
           apt: update_cache=yes
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
         - name: update system
+          become: true
           apt: upgrade=dist
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
         - name: install packages
-          apt: name='{{ item }}' state=present
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+          apt: name='{{ item }}' state=present
+          become: true
           with_items:
             - nginx
             - php7.0
@@ -88,3 +93,37 @@
             - libmysqlclient-dev
             - certbot
             - python-mysqldb
+
+        - name: Create a new databases
+          mysql_db:
+            name: "{{ domainShort }}"
+            login_user: "{{ mysqluser }}"
+            login_password: "{{ mysqlpassword }}"
+            state: present
+
+        - name: Create a new user
+          mysql_user:
+            name: "{{ domainShort }}"
+            login_user: "{{ mysqluser }}"
+            login_password: "{{ mysqlpassword }}"
+            password: "{{ lookup('password', './passwordfile chars=ascii_letters,digits,hexdigits,punctuation') }}"
+            priv: '*.*:ALL'
+            state: present
+
+        - name: create www folder
+          become: true
+          become_method: su
+          become_user: root
+          file:
+            path: /var/www/"{{domainLong}}"
+            state: directory
+            mode: 0755
+
+
+        - name: Download wordpress
+          become: true
+          become_method: su
+          become_user: root
+          get_url:
+            url: https://wordpress.org/latest.tar.gz
+            dest: ./wordpress.tar.gz

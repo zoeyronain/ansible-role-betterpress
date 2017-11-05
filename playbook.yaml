@@ -1,6 +1,7 @@
 ---
     - hosts: localhost
       connection: local
+      become: true
 
       vars_prompt:
         - name: "domainShort"
@@ -61,19 +62,18 @@
           when: missingdhparam.stat.exists == False
 
         - name: update cache
-          become: true
+
           apt: update_cache=yes
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
         - name: update system
-          become: true
+
           apt: upgrade=dist
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
         - name: install packages
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           apt: name='{{ item }}' state=present
-          become: true
           with_items:
             - nginx
             - php7.0
@@ -111,19 +111,19 @@
             state: present
 
         - name: create www folder
-          become: true
-          become_method: su
-          become_user: root
           file:
-            path: /var/www/"{{domainLong}}"
+            path: "/var/www/{{domainLong}}"
             state: directory
             mode: 0755
 
+        - name: extract wordpress
+          unarchive:
+            src: https://wordpress.org/latest.tar.gz
+            dest: "/var/www/{{domainLong}}"
+            remote_src: yes
+            extra_opts: [--strip-components=1]
 
-        - name: Download wordpress
-          become: true
-          become_method: su
-          become_user: root
-          get_url:
-            url: https://wordpress.org/latest.tar.gz
-            dest: ./wordpress.tar.gz
+        # - name: copy files to the correct location
+        #   copy:
+        #     src: "/var/www/{{domainLong}}/wordpress"
+        #     dest: "/var/www/{{domainLong}}"

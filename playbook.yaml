@@ -39,6 +39,11 @@
 
 
       tasks:
+
+        - name: allow the installation of PHP 7.1 on ubuntu 17.04
+          apt_repository:
+            repo: 'ppa:ondrej/php'
+
         - name: ensure that nginxconfig.conf exists
           stat:
             path: ./configs/nginxconfig.conf.j2

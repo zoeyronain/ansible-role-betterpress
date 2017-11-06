@@ -3,6 +3,9 @@
       connection: local
       become: true
 
+      vars:
+        db_password: "{{ lookup('password', './passwordfile chars=ascii_letters,digits,hexdigits,punctuation') }}"
+
       vars_prompt:
         - name: "domainShort"
           prompt: "What is the domain (without .com/.net)?"
@@ -113,7 +116,7 @@
             name: "{{ domainShort }}"
             login_user: "{{ mysqluser }}"
             login_password: "{{ mysqlpassword }}"
-            password: "{{ lookup('password', './passwordfile chars=ascii_letters,digits,hexdigits,punctuation') }}"
+            password: "{{db_password}}"
             priv: '*.*:ALL'
             state: present
           register: wp_password

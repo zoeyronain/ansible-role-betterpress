@@ -33,9 +33,7 @@
         - name: "ipv6"
           prompt: "What is the ipv6 address of your server?"
 
-        - name: Fetch random salts for WordPress config
-          local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
-          register: "wp_salt"
+
 
       tasks:
         - name: ensure that nginxconfig.conf exists
@@ -168,7 +166,10 @@
             account_api_token: "{{cfapi}}"
           register: record
 
-
+        - name: Fetch random salts for WordPress config
+          local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
+          register: "wp_salt"
+          
         - name: copy nginx config
           copy:
             src: ./configs/nginxconfig.conf.j2

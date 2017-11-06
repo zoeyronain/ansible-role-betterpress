@@ -28,7 +28,7 @@
 
         - name: "ipv6"
           prompt: "What is the ipv6 address of your server?"
-        
+
       tasks:
         - name: ensure that nginxconfig.conf exists
           stat:
@@ -181,7 +181,7 @@
               notify:
                 - restart nginx
 
-        - name: Create letsencrypt certificate
+        - name: generate letsencrypt certificate
           shell: letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ domainLong }}
           args:
           creates: /etc/letsencrypt/live/{{ domainLong }}

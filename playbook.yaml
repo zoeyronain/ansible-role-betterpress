@@ -162,14 +162,8 @@
 
         - name: copy nginx config
           copy:
-            src: ./configs/nginxconfig.conf
+            src: ./configs/nginxconfig.conf.j2
             dest: "/etc/nginx/sites-enabled/{{domainLong}}"
-
-        - name: edit nginx Config
-          lineinfile:
-            path: "/etc/nginx/sites-enabled/{{domainLong}}"
-            regexp: '^server_name'
-            line: 'server_name {{domainLong}} www.{{domainLong}}'
 
         - name: create letsencrypt directory
           file: name=/var/www/letsencrypt state=directory
@@ -184,7 +178,7 @@
         - name: generate letsencrypt certificate
           shell: letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ domainLong }}
           args:
-          creates: /etc/letsencrypt/live/{{ domainLong }}
+            creates: /etc/letsencrypt/live/{{ domainLong }}
 
 
         - name: Add letsencrypt cronjob for cert renewal

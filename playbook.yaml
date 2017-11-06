@@ -7,6 +7,7 @@
         - name: "domainShort"
           prompt: "What is the domain (without .com/.net)?"
 
+
         - name: "domainLong"
           prompt: "What is the domain with .com/.net?"
 
@@ -18,7 +19,7 @@
 
         - name: "mysqluser"
           prompt: "What is your mysql user (that can create users and databases)?"
-
+          default: root
         - name: "mysqlpassword"
           prompt: "What is the password for your mysql user?"
 
@@ -27,7 +28,7 @@
 
         - name: "ipv6"
           prompt: "What is the ipv6 address of your server?"
-
+        
       tasks:
         - name: ensure that nginxconfig.conf exists
           stat:
@@ -123,7 +124,71 @@
             remote_src: yes
             extra_opts: [--strip-components=1]
 
-        # - name: copy files to the correct location
-        #   copy:
-        #     src: "/var/www/{{domainLong}}/wordpress"
-        #     dest: "/var/www/{{domainLong}}"
+
+        - cloudflare_dns:
+            zone: "{{domainLong}}"
+            record: www
+            type: A
+            value: "{{ipv4}}"
+            account_email: "{{cfemail}}"
+            account_api_token: "{{cfapi}}"
+          register: record
+
+        - cloudflare_dns:
+            zone: "{{domainLong}}"
+            type: A
+            value: "{{ipv4}}"
+            account_email: "{{cfemail}}"
+            account_api_token: "{{cfapi}}"
+          register: record
+
+        - cloudflare_dns:
+            zone: "{{domainLong}}"
+            record: www
+            type: AAAA
+            value: "{{ipv6}}"
+            account_email: "{{cfemail}}"
+            account_api_token: "{{cfapi}}"
+          register: record
+
+        - cloudflare_dns:
+            zone: "{{domainLong}}"
+            type: AAAA
+            value: "{{ipv6}}"
+            account_email: "{{cfemail}}"
+            account_api_token: "{{cfapi}}"
+          register: record
+
+
+        - name: copy nginx config
+          copy:
+            src: ./configs/nginxconfig.conf
+            dest: "/etc/nginx/sites-enabled/{{domainLong}}"
+
+        - name: edit nginx Config
+          lineinfile:
+            path: "/etc/nginx/sites-enabled/{{domainLong}}"
+            regexp: '^server_name'
+            line: 'server_name {{domainLong}} www.{{domainLong}}'
+
+        - name: create letsencrypt directory
+          file: name=/var/www/letsencrypt state=directory
+
+        - name: Install nginx config for HTTPS site
+          template:
+              src: configs/nginxconfig.conf.j2
+              dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
+              notify:
+                - restart nginx
+
+        - name: Create letsencrypt certificate
+          shell: letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ domainLong }}
+          args:
+          creates: /etc/letsencrypt/live/{{ domainLong }}
+
+
+        - name: Add letsencrypt cronjob for cert renewal
+          cron:
+            name: letsencrypt_renewal
+            special_time: weekly
+            job: letsencrypt --renew certonly -n --webroot -w /var/www/letsencrypt -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart

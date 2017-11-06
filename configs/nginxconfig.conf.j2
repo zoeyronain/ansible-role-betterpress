@@ -19,12 +19,13 @@
 
 server {
          client_max_body_size 100m;
-         root
+         root /var/www/{{domainLong}}
          index index.php index.html index.htm;
          listen 443 http2 ssl;
          listen   [::]:443 http2 ssl;
-         ssl_certificate
-         ssl_certificate_key
+         ssl_certificate /etc/letsencrypt/live/{{ domainLong }}/fullchain.pem
+         ssl_certificate_key /etc/letsencrypt/live/{{ domainLong }}/privkey.pem;
+         ssl_trusted_certificate /etc/letsencrypt/live/{{ domainLong }}/fullchain.pem;
          ssl_protocols TLSv1.2;
          ssl_prefer_server_ciphers on;
          ssl_dhparam /etc/nginx/ssl/dhparam.pem;
@@ -85,6 +86,9 @@ server {
 
 server {
         listen 80;
-       server_name
-      return 301 https://$host$request_uri;
+       server_name {{domainLong}} www.{{domainLong}};
+
+
+       location / {
+           rewrite ^ https://{{ domainLong }}$request_uri? permanent;
 }

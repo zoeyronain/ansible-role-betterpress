@@ -169,11 +169,7 @@
         - name: Fetch random salts for WordPress config
           local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
           register: "wp_salt"
-          
-        - name: copy nginx config
-          copy:
-            src: ./configs/nginxconfig.conf.j2
-            dest: "/etc/nginx/sites-enabled/{{domainLong}}"
+
 
         - name: create letsencrypt directory
           file: name=/var/www/letsencrypt state=directory

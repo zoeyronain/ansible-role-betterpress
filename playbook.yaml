@@ -182,17 +182,31 @@
               src: configs/nginxconfig.conf.j2
               dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
 
+        - name: Install nginx config
+          copy:
+              src: configs/nginx.conf
+              dest: "/etc/nginx/nginx.conf"
+
         - name: Install Wordpress config
           template:
             src: configs/wp-config-sample.php.j2
             dest: "/var/www/{{domainLong}}/wp-config.php"
 
         - name: generate letsencrypt certificate
-          # shell: letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLonggit }}
           shell: certbot certonly --agree-tos -a standalone -m {{cfemail }} -d {{domainLong}} -d www.{{domainLong}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
 
+
+        - name: start services
+          service:
+              name: nginx
+              state: started
+
+        - name: start services
+          service:
+              name: php7.1-fpm
+              state: started
 
         - name: Add letsencrypt cronjob for cert renewal
           cron:

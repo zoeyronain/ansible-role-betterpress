@@ -172,8 +172,7 @@
           template:
               src: configs/nginxconfig.conf.j2
               dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
-              notify:
-                - restart nginx
+          
 
         - name: generate letsencrypt certificate
           shell: letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ domainLong }}

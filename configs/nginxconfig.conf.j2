@@ -19,11 +19,11 @@
 
 server {
          client_max_body_size 100m;
-         root "/var/www/{{domainLong}};"
+         root /var/www/{{domainLong}};
          index index.php index.html index.htm;
          listen 443 http2 ssl;
          listen   [::]:443 http2 ssl;
-         ssl_certificate "/etc/letsencrypt/live/{{ domainLong }}/fullchain.pem;"
+         ssl_certificate /etc/letsencrypt/live/{{ domainLong }}/fullchain.pem;
          ssl_certificate_key /etc/letsencrypt/live/{{ domainLong }}/privkey.pem;
          ssl_trusted_certificate /etc/letsencrypt/live/{{ domainLong }}/fullchain.pem;
          ssl_protocols TLSv1.2;

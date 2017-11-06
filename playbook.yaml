@@ -175,7 +175,8 @@
 
 
         - name: generate letsencrypt certificate
-          shell: letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}}
+          # shell: letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLonggit }}
+          shell: certbot certonly --agree-tos -a standalone -m {{cfemail }} -d {{domainLong}} -d www.{{domainLong}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
 
@@ -184,4 +185,4 @@
           cron:
             name: letsencrypt_renewal
             special_time: weekly
-            job: letsencrypt --renew certonly -n --webroot -w /var/www/letsencrypt -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart
+            job: service nginx stop && letsencrypt --renew certonly -n -a standalone -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart

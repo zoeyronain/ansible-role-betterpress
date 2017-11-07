@@ -86,6 +86,45 @@
           apt: upgrade=dist
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
+        - name: Install updates
+          yum: name=* state=latest
+          register: updated
+          when: (ansible_distribution == "CentOS" or ansible_distribution == 'Red Hat Enterprise Linux')
+
+        - name: install epel
+          yum_repository:
+            name: php7
+            baseurl: http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+          when: (ansible_distribution == "CentOS" or ansible_distribution == 'Red Hat Enterprise Linux')
+
+        - name: install necessary yum packages
+          yum: name=yum-utils state=present
+          when: (ansible_distribution == "CentOS" or ansible_distribution == 'Red Hat Enterprise Linux')
+
+        - name: select php 7.1
+          command: yum-config-manager --enable remi-php71
+          when: (ansible_distribution == "CentOS" or ansible_distribution == 'Red Hat Enterprise Linux')
+
+        - name: install packages
+          when: (ansible_distribution == "CentOS" or ansible_distribution == 'Red Hat Enterprise Linux')
+          yum: name='{{ item }}' state=present
+          with_items:
+            - nginx
+            - php
+            - php-mysql
+            - php-fpm
+            - php-cli
+            - php-gd
+            - php-json
+            - php-mbstring
+            - php-mcrypt
+            - php-readline
+            - php-xml
+            - php-zip
+            - mariadb-server
+            - mariadb-client
+            - python-certbot-apache
+            - python-mysqldb
         - name: install packages
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           apt: name='{{ item }}' state=present
@@ -198,7 +237,7 @@
             dest: "/var/www/{{domainLong}}/wp-config.php"
 
         - name: generate letsencrypt certificate
-          shell: certbot certonly --agree-tos -a standalone -m {{cfemail }} -d {{domainLong}} -d www.{{domainLong}}
+          shell: certbot certonly --agree-tos -a standalone -m {{ cfemail }} -d {{domainLong}} -d www.{{domainLong}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
 

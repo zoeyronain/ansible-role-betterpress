@@ -50,7 +50,7 @@
 
       tasks:
 
-    
+
 
 
         - name: allow the installation of PHP 7.1 on ubuntu 17.04
@@ -122,18 +122,14 @@
           with_items:
               - yum-utils
 
-        - name: yum | enable remi-php71 repository
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
-          yum_repository:
-            name: remi-php71
-            enabled: yes
+
 
         - name: install packages
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           yum: name='{{ item }}' state=present
           with_items:
               - nginx
-              - php
+              - php71
               - php71-mysql
               - php71-fpm
               - php71-cli

@@ -303,9 +303,16 @@
 
 
         - name: start services
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           service:
-              name: php-fpm
-              state: started
+            name: php7.1-fpm
+            state: started
+
+        - name: start services
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          service:
+            name: php-fpm
+            state: started
 
         - name: Add letsencrypt cronjob for cert renewal
           cron:

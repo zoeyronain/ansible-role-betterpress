@@ -143,7 +143,6 @@
               - python-pip
               - mariadb-server
               - mariadb
-              - libmysqlclient-dev
               - certbot
               - python-mysqldb
 

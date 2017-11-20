@@ -104,10 +104,10 @@
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
 
 
-          - name: install packages
-            when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
-            yum: name='{{ item }}' state=present
-            with_items:
+        - name: install packages
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          yum: name='{{ item }}' state=present
+          with_items:
               - nginx
               - php71
               - php71-mysql
@@ -126,6 +126,7 @@
               - libmysqlclient-dev
               - certbot
               - python-mysqldb
+
         - name: install packages
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           apt: name='{{ item }}' state=present
@@ -150,7 +151,6 @@
             - python-mysqldb
 
 
-    
         - name: Create a new databases
           mysql_db:
             name: "{{ domainShort }}"

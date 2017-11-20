@@ -1,0 +1,8 @@
+hosts: local
+ vars:
+   domainShort: #No TLD (.com, .net)
+   domainLong: #With TLD (no www)
+   cfemail: # Email used for cloudflare_dns
+   cfapi: # Cloudflare API key
+   ipv4: # IPV4 (10.10.0.1 style)
+   ipv6: # IPV6 (the IP with :'s)

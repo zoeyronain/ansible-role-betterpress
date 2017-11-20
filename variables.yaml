@@ -1,0 +1,8 @@
+hosts: local
+ vars:
+   domainShort: betterpress
+   domainLong: betterpress.site
+   cfemail: zoey.cluff@gmail.com
+   cfapi: e434d062e2a896a80e25df4014bcb26b1636c
+   ipv4: 18.216.168.136
+   ipv6: 

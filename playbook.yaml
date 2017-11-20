@@ -4,6 +4,11 @@
       become: true
 
 
+    - name: Include vars of stuff.yml into the 'stuff' variable (2.2).
+      include_vars:
+        file: variables.yaml
+        name: stuff
+
 
       vars:
         db_password: "{{ lookup('password', './passwordfile chars=ascii_letters,digits,hexdigits,punctuation') }}"

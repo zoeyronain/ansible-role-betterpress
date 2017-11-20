@@ -130,7 +130,7 @@
           with_items:
               - nginx
               - php71
-              - php71w-mysql
+              - php-mysqlnd
               - php71w-fpm
               - php71w-cli
               - php71w-gd

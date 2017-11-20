@@ -89,13 +89,13 @@
           apt: update_cache=yes
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
-        - name: Add EPEL
-          yum_repository:
-            name: epel
-            description: EPEL YUM repo
-            state: present
-            baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
-            when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+
+        - name: install epel first
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          yum: name='{{ item }}' state=present
+          with_items:
+            epel-release
+
 
         - name: update system
 

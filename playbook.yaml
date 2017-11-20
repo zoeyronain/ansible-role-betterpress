@@ -51,6 +51,7 @@
         - name: allow the installation of PHP 7.1 on ubuntu 17.04
           apt_repository:
             repo: 'ppa:ondrej/php'
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
         - name: ensure that nginxconfig.conf exists
           stat:

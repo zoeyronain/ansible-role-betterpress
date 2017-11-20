@@ -318,6 +318,7 @@
             path: "/var/www/{{domainLong}}"
             owner: www-data
             group: www-data
+            recurse: yes
 
 
         - name: Open https on the firewall

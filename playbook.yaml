@@ -291,6 +291,7 @@
             state: enabled
 
         - name: restart firewalld
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           service:
               name: firewalld
               state: restarted

@@ -5,7 +5,7 @@
 
 
 
-      include_vars: variables.yaml
+    
 
 
 
@@ -314,7 +314,6 @@
         - name: change folder permissions
           file:
             path: "/var/www/{{domainLong}}"
-            mode: 0644
             owner: www-data
             group: www-data
 

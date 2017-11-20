@@ -5,7 +5,7 @@
 
 
 
-    
+
 
 
 
@@ -303,13 +303,15 @@
             src: configs/wp-config-sample.php.j2
             dest: "/var/www/{{domainLong}}/wp-config.php"
 
-        - name: fix permissions the lazy way!
-          chdir: /var/www/{{domainLong}}
-          shell: find . -type f -exec chmod 664 {} +
+        - name: fix permissions the lazy way
+          file:
+            chdir: "/var/www/{{domainLong}}"
+            shell: find . -type f -exec chmod 664 {} +
 
-        - name: fix permissions the lazy way!
-          chdir: /var/www/{{domainLong}}
-          shell: find . -type d -exec chmod 775 {} +
+        - name: fix permissions the lazy way
+          file:
+            chdir: "/var/www/{{domainLong}}"
+            shell: find . -type d -exec chmod 775 {} +
 
         - name: change folder permissions
           file:

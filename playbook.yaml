@@ -263,7 +263,7 @@
           template:
               src: configs/nginxconfig.conf.j2
               dest: "/etc/nginx/conf.d/{{domainLong}}.conf"
-              when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
         - name: Install nginx config
           copy:
               src: configs/nginx.conf

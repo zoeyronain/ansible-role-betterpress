@@ -130,16 +130,16 @@
           with_items:
               - nginx
               - php71
-              - php71-mysql
-              - php71-fpm
-              - php71-cli
-              - php71-gd
-              - php71-json
-              - php71-mbstring
-              - php71-mcrypt
-              - php71-readline
-              - php71-xml
-              - php71-zip
+              - php71w-mysql
+              - php71w-fpm
+              - php71w-cli
+              - php71w-gd
+              - php71w-json
+              - php71w-mbstring
+              - php71w-mcrypt
+              - php71w-readline
+              - php71w-xml
+              - php71w-zip
               - python-pip
               - mariadb-server
               - mariadb

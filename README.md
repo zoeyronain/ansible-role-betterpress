@@ -10,7 +10,7 @@ All you need to do to get your Wordpress setup running is to do:
 
 ```
 git clone https://github.com/ZoeyCluff/BetterPress.git
-(sudo) apt-get install Ansible
+(sudo) apt-get install ansible
 ansible-playbook -i ./hosts playbook.yaml
 ```
 

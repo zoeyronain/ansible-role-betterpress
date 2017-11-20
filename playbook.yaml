@@ -171,6 +171,7 @@
 
 
         - name: start services
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           service:
               name: mariadb
               state: started

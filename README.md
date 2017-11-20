@@ -4,17 +4,13 @@ This is a continuation of my [AutoWordpress](https://github.com/ZoeyCluff/AutoWo
 
 The python script was buggy, never worked the same way twice, and didn't handle errors well. This still doesn't handle ALL errors well, but most are handled gracefully (if you consider "FAILED: *Reason*" to be graceful).
 
-This Ansible playbook is meant to be run on a FRESH never used server. It is coded for Ubuntu 17.10 but the code I added to install PHP 7.1 packages on 17.04 should also work (no idea if it works on 16.04 or 16.10, but why haven't you updated?)
+This Ansible playbook is meant to be run on a FRESH never used server. It's been coded for Ubuntu 17.04/17.10, and current versions of CentOS and RHEL. The playbook is smart enough to know which OS you're running.
 
-All you need to do to get your Wordpress setup running is to do:
-
+To run this:
 ```
+Install git and ansible (using yum or apt-get)
 git clone https://github.com/ZoeyCluff/BetterPress.git
-(sudo) apt-get install ansible
 cd BetterPress
 ansible-playbook -i ./hosts playbook.yaml
+Answer the questions, wait 5-10 minutes and BAM, Welcome to the famous five-minute WordPress installation process!
 ```
-
-and you should be greeted by the welcome to wordpress page where you enter your blog name and user information.
-
-Vola, Finished in under 5 minutes!

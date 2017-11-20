@@ -170,6 +170,11 @@
             - python-mysqldb
 
 
+        - name: start services
+          service:
+              name: mariadb
+              state: started
+              
         - name: Create a new databases
           mysql_db:
             name: "{{ domainShort }}"

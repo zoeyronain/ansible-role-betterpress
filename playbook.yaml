@@ -218,3 +218,8 @@
             name: letsencrypt_renewal
             special_time: weekly
             job: service nginx stop && letsencrypt --renew certonly -n -a standalone -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart
+
+        - name: restart NGINX for new config to take effect
+          service:
+            name: nginx
+            state: restarted

@@ -131,15 +131,15 @@
               - nginx
               - php71
               - php-mysqlnd
-              - php71w-fpm
-              - php71w-cli
-              - php71w-gd
-              - php71w-json
-              - php71w-mbstring
-              - php71w-mcrypt
-              - php71w-readline
-              - php71w-xml
-              - php71w-zip
+              - php-fpm
+              - php-cli
+              - php-gd
+              - php-json
+              - php-mbstring
+              - php-mcrypt
+              - php-readline
+              - php-xml
+              - php-zip
               - python-pip
               - mariadb-server
               - mariadb

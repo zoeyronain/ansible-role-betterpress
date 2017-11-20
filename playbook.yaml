@@ -3,10 +3,7 @@
       connection: local
       become: true
 
-    - name: Include vars of lazy.yml into the 'stuff' variable (2.2).
-      include_vars:
-        file: lazy.yml
-        name: stuff
+
 
       vars:
         db_password: "{{ lookup('password', './passwordfile chars=ascii_letters,digits,hexdigits,punctuation') }}"
@@ -52,6 +49,11 @@
 
 
       tasks:
+
+        - name: Include vars of lazy.yml into the 'stuff' variable (2.2).
+          include_vars:
+            file: lazy.yml
+            name: stuff
 
         - name: allow the installation of PHP 7.1 on ubuntu 17.04
           apt_repository:

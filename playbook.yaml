@@ -297,7 +297,7 @@
 
         - name: start services
           service:
-              name: php7.1-fpm
+              name: php-fpm
               state: started
 
         - name: Add letsencrypt cronjob for cert renewal

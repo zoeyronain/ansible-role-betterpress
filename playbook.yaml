@@ -52,8 +52,11 @@
 
         - name: Include vars of lazy.yml into the 'stuff' variable (2.2).
           include_vars:
-            file: lazy.yml
+            file: lazy.ymal
             name: stuff
+        - include: ./lazy.yaml
+          when: optional_file.stat.exists
+
 
         - name: allow the installation of PHP 7.1 on ubuntu 17.04
           apt_repository:
@@ -103,7 +106,7 @@
           with_items:
             epel-release
 
-        - name: install the nginx rpm from a remote repo
+        - name: install the php rpm from a remote repo
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           yum:
             name: http://rpms.remirepo.net/enterprise/remi-release-7.rpm

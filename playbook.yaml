@@ -8,7 +8,7 @@
           ignore_errors: yes
           include_vars:
           file: variables.yaml
-          name: stuff
+
 
 
 
@@ -317,6 +317,18 @@
               name: firewalld
               state: restarted
 
+        - name: open ports
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+          ufw:
+              rule: allow
+              name: http
+
+        - name: open ports
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+          ufw:
+              rule: allow
+              name: https
+
         - name: generate letsencrypt certificate
           shell: certbot certonly --agree-tos -a standalone -m {{ cfemail }} -d {{domainLong}} -d www.{{domainLong}}
           args:
@@ -328,6 +340,8 @@
           service:
             name: php7.1-fpm
             state: started
+
+
 
         - name: start services
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")

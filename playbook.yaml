@@ -93,6 +93,7 @@
           yum_repository:
             name: epel
             description: EPEL YUM repo
+            state: present
             baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
             when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
 

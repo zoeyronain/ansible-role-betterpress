@@ -311,6 +311,13 @@
           chdir: /var/www/{{domainLong}}
           shell: find . -type d -exec chmod 775 {} +
 
+        - name: change folder permissions
+          file:
+            path: "/var/www/{{domainLong}}"
+            mode: 0644
+            owner: www-data
+            group: www-data
+
 
         - name: Open https on the firewall
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")

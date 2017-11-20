@@ -210,6 +210,8 @@
             path: "/var/www/{{domainLong}}"
             state: directory
             mode: 0755
+            owner: www-data
+            group: www-data
 
         - name: extract wordpress
           unarchive:

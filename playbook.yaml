@@ -5,7 +5,7 @@
 
       tasks:
         - name: Include vars of stuff.yml into the 'stuff' variable (2.2).
-          when: shorewall_rules.stat.exists == True
+          ignore_errors: yes
           include_vars:
           file: variables.yaml
           name: stuff

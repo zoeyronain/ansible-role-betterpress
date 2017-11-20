@@ -3,12 +3,12 @@
       connection: local
       become: true
 
-
-    - name: Include vars of stuff.yml into the 'stuff' variable (2.2).
-      when: shorewall_rules.stat.exists == True
-      include_vars:
-        file: variables.yaml
-        name: stuff
+      tasks:
+        - name: Include vars of stuff.yml into the 'stuff' variable (2.2).
+          when: shorewall_rules.stat.exists == True
+          include_vars:
+          file: variables.yaml
+          name: stuff
 
 
 

@@ -274,15 +274,16 @@
             src: configs/wp-config-sample.php.j2
             dest: "/var/www/{{domainLong}}/wp-config.php"
 
-        - name: add ports to the firewall (instead of being lazy and turning it off totally)
 
-        - firewalld:
+        - name: Open https on the firewall
+          firewalld:
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           service: https
           permanent: true
           state: enabled
 
-        - firewalld:
+        - name: Open http on the firewall
+          firewalld:
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           service: http
           permanent: true

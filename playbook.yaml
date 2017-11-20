@@ -321,13 +321,15 @@
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           ufw:
               rule: allow
-              name: http
+              port: '80'
+              proto: tcp
 
         - name: open ports
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           ufw:
               rule: allow
-              name: https
+              port: '443'
+              proto: tcp
 
         - name: generate letsencrypt certificate
           shell: certbot certonly --agree-tos -a standalone -m {{ cfemail }} -d {{domainLong}} -d www.{{domainLong}}

@@ -304,14 +304,14 @@
             dest: "/var/www/{{domainLong}}/wp-config.php"
 
         - name: fix permissions the lazy way
-          file:
+          shell:
             chdir: "/var/www/{{domainLong}}"
-            shell: find . -type f -exec chmod 664 {} +
+            cmd: find . -type f -exec chmod 664 {} +
 
         - name: fix permissions the lazy way
-          file:
+          shell:
             chdir: "/var/www/{{domainLong}}"
-            shell: find . -type d -exec chmod 775 {} +
+            cmd: find . -type d -exec chmod 775 {} +
 
         - name: change folder permissions
           file:

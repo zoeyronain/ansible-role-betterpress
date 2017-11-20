@@ -144,7 +144,7 @@
               - mariadb-server
               - mariadb
               - certbot
-              - python-mysqldb
+              - MySQL-python
 
         - name: install packages
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")

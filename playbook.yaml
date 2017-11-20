@@ -103,30 +103,29 @@
           yum: name=* state=latest
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
 
-        - name: install packages
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
-          yum: name='{{ item }}' state=present
-          with_items:
-            - nginx
-            - php7.1
-            - php7.1-mysql
-            - php7.1-fpm
-            - php7.1-cli
-            - php7.1-gd
-            - php7.1-json
-            - php7.1-mbstring
-            - php7.1-mcrypt
-            - php7.1-readline
-            - php7.1-xml
-            - php7.1-zip
-            - python-pip
-            - mysql-server
-            - mysql-client
-            - libmysqlclient-dev
-            - certbot
-            - python-mysqldb
 
-
+          - name: install packages
+            when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+            yum: name='{{ item }}' state=present
+            with_items:
+              - nginx
+              - php71
+              - php71-mysql
+              - php71-fpm
+              - php71-cli
+              - php71-gd
+              - php71-json
+              - php71-mbstring
+              - php71-mcrypt
+              - php71-readline
+              - php71-xml
+              - php71-zip
+              - python-pip
+              - mysql-server
+              - mysql-client
+              - libmysqlclient-dev
+              - certbot
+              - python-mysqldb
         - name: install packages
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           apt: name='{{ item }}' state=present
@@ -150,6 +149,8 @@
             - certbot
             - python-mysqldb
 
+
+    
         - name: Create a new databases
           mysql_db:
             name: "{{ domainShort }}"

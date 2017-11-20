@@ -60,10 +60,15 @@
 
         - name: ensure that nginxconfig.conf exists
           stat:
-            path: ./configs/nginxconfig.conf.j2
+            path: ./configs/nginxconfigDEBIAN.conf.j2
           register: nginx
           failed_when: nginx.stat.exists == False
 
+        - name: ensure that nginxconfigCENTOS.conf exists
+          stat:
+            path: ./configs/nginxconfigCENTOS.conf.j2
+          register: nginx
+          failed_when: nginx.stat.exists == False
         - name: ensure that wordpress's config exists
           stat:
             path: ./configs/wp-config-sample.php.j2
@@ -256,18 +261,27 @@
 
         - name: Install nginx config for HTTPS site
           template:
-              src: configs/nginxconfig.conf.j2
+              src: configs/nginxconfigDEBIAN.conf.j2
               dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
         - name: Install nginx config for HTTPS site
           template:
-              src: configs/nginxconfig.conf.j2
+              src: configs/nginxconfigCENTOS.conf.j2
               dest: "/etc/nginx/conf.d/{{domainLong}}.conf"
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
-        - name: Install nginx config
+
+
+        - name: Install nginx config for Debian/ Ubuntu
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           copy:
-              src: configs/nginx.conf
+              src: configs/nginxDEBIAN.conf
+              dest: "/etc/nginx/nginx.conf"
+
+        - name: Install nginx config for Debian/ Ubuntu
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          copy:
+              src: configs/nginxCENTOS.conf
               dest: "/etc/nginx/nginx.conf"
 
         - name: Install Wordpress config

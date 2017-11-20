@@ -289,6 +289,11 @@
             permanent: true
             state: enabled
 
+        - name: restart firewalld
+          service:
+              name: firewalld
+              state: restarted
+
         - name: generate letsencrypt certificate
           shell: certbot certonly --agree-tos -a standalone -m {{ cfemail }} -d {{domainLong}} -d www.{{domainLong}}
           args:

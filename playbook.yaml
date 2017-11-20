@@ -217,9 +217,7 @@
           file:
             path: "/var/www/{{domainLong}}"
             state: directory
-            mode: 0755
-            owner: nobody
-            group: nobody
+
         - name: extract wordpress
           unarchive:
             src: https://wordpress.org/latest.tar.gz
@@ -227,15 +225,7 @@
             remote_src: yes
             extra_opts: [--strip-components=1]
 
-        - name: create www folder
-
-          file:
-            when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
-            path: "/var/www/{{domainLong}}"
-            mode: 0644
-            owner: www-data
-            group: www-data
-
+      
         - name: ipv4 www
           cloudflare_dns:
             zone: "{{domainLong}}"

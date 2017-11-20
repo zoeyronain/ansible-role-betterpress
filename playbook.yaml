@@ -96,7 +96,6 @@
           with_items:
             epel-release
 
-
         - name: update system
 
           apt: upgrade=dist

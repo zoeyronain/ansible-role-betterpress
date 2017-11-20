@@ -147,8 +147,8 @@
             remote_src: yes
             extra_opts: [--strip-components=1]
 
-
-        - cloudflare_dns:
+        - name: ipv4 www
+          cloudflare_dns:
             zone: "{{domainLong}}"
             record: www
             type: A
@@ -157,7 +157,8 @@
             account_api_token: "{{cfapi}}"
           register: record
 
-        - cloudflare_dns:
+        - name: ipv4 A record
+          cloudflare_dns:
             zone: "{{domainLong}}"
             type: A
             value: "{{ipv4}}"
@@ -165,7 +166,8 @@
             account_api_token: "{{cfapi}}"
           register: record
 
-        - cloudflare_dns:
+        - name: ipv6 www record
+          cloudflare_dns:
             zone: "{{domainLong}}"
             record: www
             type: AAAA
@@ -173,16 +175,17 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: ipv6 is defined
+          when: ipv6 != ''
 
-        - cloudflare_dns:
+        - name: ipv6 record
+          cloudflare_dns:
             zone: "{{domainLong}}"
             type: AAAA
             value: "{{ipv6}}"
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: ipv6 is defined
+          when: ipv6 != ''
 
         - name: Fetch random salts for WordPress config
           local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
@@ -213,7 +216,6 @@
             creates: /etc/letsencrypt/live/{{ domainLong }}
 
 
-
         - name: start services
           service:
               name: php7.1-fpm
@@ -228,4 +230,4 @@
         - name: restart NGINX for new config to take effect
           service:
             name: nginx
-            state: started
+            state: restarted

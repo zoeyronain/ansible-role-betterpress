@@ -9,33 +9,41 @@
       vars_prompt:
         - name: "domainShort"
           prompt: "What is the domain (without .com/.net)?"
-
+          private: no
 
         - name: "domainLong"
           prompt: "What is the domain with .com/.net?"
+          private: no
 
         - name: "cfemail"
           prompt: "What is your cloudflare email?"
+          private: no
 
         - name: "cfapi"
           prompt: "What is your cloudflare API key?"
+          private: no
 
         - name: "mysqluser"
           prompt: "What is your mysql user (that can create users and databases)?"
           default: root
+          private: no
+
         - name: "mysqlpassword"
           prompt: "What is the password for your mysql user?"
+          private: no
 
         - name: "mysqlHost"
           prompt: "What is the mysql Server IP / hostname?"
           default: 127.0.0.1
+          private: no
 
         - name: "ipv4"
           prompt: "What is the ipv4 address of your server?"
+          private: no
 
         - name: "ipv6"
           prompt: "What is the ipv6 address of your server?"
-
+          private: no
 
 
       tasks:
@@ -165,6 +173,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
+          when: ipv6 is defined
 
         - cloudflare_dns:
             zone: "{{domainLong}}"
@@ -173,6 +182,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
+          when: ipv6 is defined
 
         - name: Fetch random salts for WordPress config
           local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
@@ -203,10 +213,6 @@
             creates: /etc/letsencrypt/live/{{ domainLong }}
 
 
-        - name: start services
-          service:
-              name: nginx
-              state: started
 
         - name: start services
           service:
@@ -217,9 +223,9 @@
           cron:
             name: letsencrypt_renewal
             special_time: weekly
-            job: service nginx stop && letsencrypt --renew certonly -n -a standalone -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart
+            job: letsencrypt --renew certonly -n -a standalone -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart
 
         - name: restart NGINX for new config to take effect
           service:
             name: nginx
-            state: restarted
+            state: started

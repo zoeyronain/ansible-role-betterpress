@@ -85,14 +85,47 @@
           when: missingdhparam.stat.exists == False
 
         - name: update cache
-
           apt: update_cache=yes
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+
+        - name: Install EPEL repo.
+          yum:
+            name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
+            state: present
+            when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
 
         - name: update system
 
           apt: upgrade=dist
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+
+        - name: upgrade all packages
+          yum: name=* state=latest
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+
+        - name: install packages
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          yum: name='{{ item }}' state=present
+          with_items:
+            - nginx
+            - php7.1
+            - php7.1-mysql
+            - php7.1-fpm
+            - php7.1-cli
+            - php7.1-gd
+            - php7.1-json
+            - php7.1-mbstring
+            - php7.1-mcrypt
+            - php7.1-readline
+            - php7.1-xml
+            - php7.1-zip
+            - python-pip
+            - mysql-server
+            - mysql-client
+            - libmysqlclient-dev
+            - certbot
+            - python-mysqldb
+
 
         - name: install packages
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")

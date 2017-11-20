@@ -1,3 +1,4 @@
 passwordfile
 playbook.retry
 variables.yaml
+.DS_Store

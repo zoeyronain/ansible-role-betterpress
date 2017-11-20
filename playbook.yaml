@@ -276,18 +276,18 @@
 
 
         - name: Open https on the firewall
-          firewalld:
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
-          service: https
-          permanent: true
-          state: enabled
+          firewalld:
+            service: https
+            permanent: true
+            state: enabled
 
         - name: Open http on the firewall
-          firewalld:
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
-          service: http
-          permanent: true
-          state: enabled
+          firewalld:
+            service: http
+            permanent: true
+            state: enabled
 
         - name: generate letsencrypt certificate
           shell: certbot certonly --agree-tos -a standalone -m {{ cfemail }} -d {{domainLong}} -d www.{{domainLong}}

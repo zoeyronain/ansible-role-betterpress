@@ -174,7 +174,7 @@
           service:
               name: mariadb
               state: started
-              
+
         - name: Create a new databases
           mysql_db:
             name: "{{ domainShort }}"
@@ -257,7 +257,13 @@
           template:
               src: configs/nginxconfig.conf.j2
               dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
+        - name: Install nginx config for HTTPS site
+          template:
+              src: configs/nginxconfig.conf.j2
+              dest: "/etc/nginx/conf.d/{{domainLong}}.conf"
+              when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
         - name: Install nginx config
           copy:
               src: configs/nginx.conf

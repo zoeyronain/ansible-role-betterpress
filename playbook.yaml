@@ -217,6 +217,8 @@
           file:
             path: "/var/www/{{domainLong}}"
             state: directory
+            owner: apache
+            group: apache
 
         - name: extract wordpress
           unarchive:
@@ -225,7 +227,7 @@
             remote_src: yes
             extra_opts: [--strip-components=1]
 
-      
+
         - name: ipv4 www
           cloudflare_dns:
             zone: "{{domainLong}}"
@@ -322,6 +324,13 @@
             group: www-data
             recurse: yes
 
+        - name: change folder permissions
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          file:
+            path: "/var/www/{{domainLong}}"
+            owner: apache
+            group: apache
+            recurse: yes
 
         - name: Open https on the firewall
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")

@@ -1,7 +1,16 @@
 ---
-    - hosts: localhost
-      connection: local
+    - hosts: VPS
       become: true
+      gather_facts: false
+      remote_user: root
+      become_user: root
+      pre_tasks:
+        - name: Install python2 for Ansible
+          raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qqy python-minimal python-setuptools)"
+          register: output
+          changed_when: output.stdout != ""
+        - name: Create config folder
+          file: path=/var/ansible/ state=directory
 
 
 
@@ -10,52 +19,58 @@
 
 
 
-      vars:
-        db_password: "{{ lookup('password', './passwordfile chars=ascii_letters,digits,hexdigits,punctuation') }}"
 
-      vars_prompt:
-        - name: "domainShort"
-          prompt: "What is the domain (without .com/.net)?"
-          private: no
-
-        - name: "domainLong"
-          prompt: "What is the domain with .com/.net?"
-          private: no
-
-        - name: "cfemail"
-          prompt: "What is your cloudflare email?"
-          private: no
-
-        - name: "cfapi"
-          prompt: "What is your cloudflare API key?"
-          private: no
-
-        - name: "mysqluser"
-          prompt: "What is your mysql user (that can create users and databases)?"
-          default: root
-          private: no
-
-        - name: "mysqlpassword"
-          prompt: "What is the password for your mysql user?"
-          private: no
-
-        - name: "mysqlHost"
-          prompt: "What is the mysql Server IP / hostname?"
-          default: 127.0.0.1
-          private: no
-
-        - name: "ipv4"
-          prompt: "What is the ipv4 address of your server?"
-          private: no
-
-        - name: "ipv6"
-          prompt: "What is the ipv6 address of your server?"
-          private: no
+      #
+      # vars_prompt:
+      #   - name: "domainShort"
+      #     prompt: "What is the domain (without .com/.net)?"
+      #     private: no
+      #
+      #   - name: "domainLong"
+      #     prompt: "What is the domain with .com/.net?"
+      #     private: no
+      #
+      #   - name: "cfemail"
+      #     prompt: "What is your cloudflare email?"
+      #     private: no
+      #
+      #   - name: "cfapi"
+      #     prompt: "What is your cloudflare API key?"
+      #     private: no
+      #
+      #   - name: "mysqluser"
+      #     prompt: "What is your mysql user (that can create users and databases)?"
+      #     default: root
+      #     private: no
+      #
+      #   - name: "mysqlpassword"
+      #     prompt: "What is the password for your mysql user?"
+      #     private: no
+      #
+      #   - name: "mysqlHost"
+      #     prompt: "What is the mysql Server IP / hostname?"
+      #     default: 127.0.0.1
+      #     private: no
+      #
+      #   - name: "ipv4"
+      #     prompt: "What is the ipv4 address of your server?"
+      #     private: no
+      #
+      #   - name: "ipv6"
+      #     prompt: "What is the ipv6 address of your server?"
+      #     private: no
 
 
       tasks:
 
 
+        - name: Gathering Facts
+          setup:
+
+
+        - name: add vars file to automate
+          include_vars:
+              file: variables.yaml
 
 
         - name: allow the installation of PHP 7.1 on ubuntu 17.04
@@ -63,20 +78,68 @@
             repo: 'ppa:ondrej/php'
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
-        - name: ensure that nginxconfig.conf exists
+        - name: copy Debians NGINX config
+          copy:
+            src: ./configs/nginxconfigDEBIAN.conf.j2
+            dest: /var/ansible/
+            owner: root
+            group: root
+            mode: 777
+
+        - name: copy Debians NGINX.conf config
+          copy:
+            src: ./configs/nginxDEBIAN.conf
+            dest: /var/ansible/
+            owner: root
+            group: root
+
+
+        - name: copy CentOSs NGINX.conf config
+          copy:
+            src: ./configs/nginxCENTOS.conf
+            dest: /var/ansible/
+            owner: root
+            group: root
+            mode: 777
+
+        - name: ensure that nginxconfigDEBIAN.conf exists
           stat:
-            path: ./configs/nginxconfigDEBIAN.conf.j2
+            path: /var/ansible/
           register: nginx
           failed_when: nginx.stat.exists == False
 
+        - name: copy Debians NGINX config
+          copy:
+            src: ./configs/nginxconfigDEBIAN.conf.j2
+            dest: /var/ansible/
+            owner: root
+            group: root
+            mode: 777
+
+        - name: copy Debians NGINX config
+          copy:
+            src: ./configs/nginxconfigCENTOS.conf.j2
+            dest: /var/ansible/
+            owner: root
+            group: root
+            mode: 777
+
         - name: ensure that nginxconfigCENTOS.conf exists
           stat:
-            path: ./configs/nginxconfigCENTOS.conf.j2
+            path: /var/ansible/
           register: nginx
           failed_when: nginx.stat.exists == False
+
+        - name: copy Wordpress Config
+          copy:
+            src: ./configs/wp-config-sample.php.j2
+            dest: /var/ansible/
+            owner: root
+            group: root
+            mode: 777
         - name: ensure that wordpress's config exists
           stat:
-            path: ./configs/wp-config-sample.php.j2
+            path: /var/ansible/
           register: wpconfig
           failed_when: wpconfig.stat.exists == False
 
@@ -189,16 +252,16 @@
         - name: Create a new databases
           mysql_db:
             name: "{{ domainShort }}"
-            login_user: "{{ mysqluser }}"
-            login_password: "{{ mysqlpassword }}"
+            login_user: "root"
+            # login_password: "{{ mysqlpassword }}"
             state: present
 
         - name: Create a new user
           mysql_user:
             name: "{{ domainShort }}"
-            login_user: "{{ mysqluser }}"
-            login_password: "{{ mysqlpassword }}"
-            password: "{{db_password}}"
+            login_user: "root"
+            # login_password: "{{ mysqlpassword }}"
+            password: "{{ lookup('password', './passwordfile chars=ascii_letters,digits,hexdigits,punctuation') }}"
             priv: '*.*:ALL'
             state: present
           register: wp_password
@@ -228,48 +291,48 @@
             extra_opts: [--strip-components=1]
 
 
-        - name: ipv4 www
-          cloudflare_dns:
-            zone: "{{domainLong}}"
-            record: www
-            type: A
-            value: "{{ipv4}}"
-            account_email: "{{cfemail}}"
-            account_api_token: "{{cfapi}}"
-          register: record
-
-        - name: ipv4 A record
-          cloudflare_dns:
-            zone: "{{domainLong}}"
-            type: A
-            value: "{{ipv4}}"
-            account_email: "{{cfemail}}"
-            account_api_token: "{{cfapi}}"
-          register: record
-
-        - name: ipv6 www record
-          cloudflare_dns:
-            zone: "{{domainLong}}"
-            record: www
-            type: AAAA
-            value: "{{ipv6}}"
-            account_email: "{{cfemail}}"
-            account_api_token: "{{cfapi}}"
-          register: record
-          when: ipv6 != ''
-
-        - name: ipv6 record
-          cloudflare_dns:
-            zone: "{{domainLong}}"
-            type: AAAA
-            value: "{{ipv6}}"
-            account_email: "{{cfemail}}"
-            account_api_token: "{{cfapi}}"
-          register: record
-          when: ipv6 != ''
+        # - name: ipv4 www
+        #   cloudflare_dns:
+        #     zone: "{{domainLong}}"
+        #     record: www
+        #     type: A
+        #     value: "{{ipv4}}"
+        #     account_email: "{{cfemail}}"
+        #     account_api_token: "{{cfapi}}"
+        #   register: record
+        #
+        # - name: ipv4 A record
+        #   cloudflare_dns:
+        #     zone: "{{domainLong}}"
+        #     type: A
+        #     value: "{{ipv4}}"
+        #     account_email: "{{cfemail}}"
+        #     account_api_token: "{{cfapi}}"
+        #   register: record
+        #
+        # - name: ipv6 www record
+        #   cloudflare_dns:
+        #     zone: "{{domainLong}}"
+        #     record: www
+        #     type: AAAA
+        #     value: "{{ipv6}}"
+        #     account_email: "{{cfemail}}"
+        #     account_api_token: "{{cfapi}}"
+        #   register: record
+        #   when: ipv6 != ''
+        #
+        # - name: ipv6 record
+        #   cloudflare_dns:
+        #     zone: "{{domainLong}}"
+        #     type: AAAA
+        #     value: "{{ipv6}}"
+        #     account_email: "{{cfemail}}"
+        #     account_api_token: "{{cfapi}}"
+        #   register: record
+        #   when: ipv6 != ''
 
         - name: Fetch random salts for WordPress config
-          local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
+          command: curl https://api.wordpress.org/secret-key/1.1/salt/
           register: "wp_salt"
 
 
@@ -278,13 +341,13 @@
 
         - name: Install nginx config for HTTPS site
           template:
-              src: configs/nginxconfigDEBIAN.conf.j2
+              src: /var/ansible/nginxconfigDEBIAN.conf.j2
               dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
         - name: Install nginx config for HTTPS site
           template:
-              src: configs/nginxconfigCENTOS.conf.j2
+              src: /var/ansible/nginxconfigCENTOS.conf.j2
               dest: "/etc/nginx/conf.d/{{domainLong}}.conf"
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
 
@@ -292,18 +355,18 @@
         - name: Install nginx config for Debian/ Ubuntu
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           copy:
-              src: configs/nginxDEBIAN.conf
+              src: /var/ansible/nginxDEBIAN.conf
               dest: "/etc/nginx/nginx.conf"
 
         - name: Install nginx config for Debian/ Ubuntu
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           copy:
-              src: configs/nginxCENTOS.conf
+              src: /var/ansible/nginxCENTOS.conf
               dest: "/etc/nginx/nginx.conf"
 
         - name: Install Wordpress config
           template:
-            src: configs/wp-config-sample.php.j2
+            src: /var/ansible/wp-config-sample.php.j2
             dest: "/var/www/{{domainLong}}/wp-config.php"
 
         - name: fix permissions the lazy way

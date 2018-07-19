@@ -180,6 +180,11 @@
             - python-mysqldb
 
 
+        - name: stop nginx
+          service:
+              name: nginx
+              state: stopped
+              
         - name: start services
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           service:

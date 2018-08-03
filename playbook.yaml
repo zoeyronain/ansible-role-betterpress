@@ -52,6 +52,11 @@
           prompt: "What is the ipv6 address of your server?"
           private: no
 
+        - name: "LetsEncrypt"
+          prompt: "Generate production or testing letsencrypt cert? (testing certs are invalid, but won't get you banned for testing)"
+          default: production
+          private: no
+
 
       tasks:
 
@@ -161,17 +166,17 @@
           apt: name='{{ item }}' state=present
           with_items:
             - nginx
-            - php7.1
-            - php7.1-mysql
-            - php7.1-fpm
-            - php7.1-cli
-            - php7.1-gd
-            - php7.1-json
-            - php7.1-mbstring
-            - php7.1-mcrypt
-            - php7.1-readline
-            - php7.1-xml
-            - php7.1-zip
+            - php7.2
+            - php7.2-mysql
+            - php7.2-fpm
+            - php7.2-cli
+            - php7.2-gd
+            - php7.2-json
+            - php7.2-mbstring
+            - php7.2-mcrypt
+            - php7.2-readline
+            - php7.2-xml
+            - php7.2-zip
             - python-pip
             - mysql-server
             - mysql-client
@@ -184,7 +189,7 @@
           service:
               name: nginx
               state: stopped
-              
+
         - name: start services
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           service:
@@ -375,6 +380,13 @@
           shell: certbot certonly --agree-tos -a standalone -m {{ cfemail }} -d {{domainLong}} -d www.{{domainLong}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
+          when: LetsEncrypt != "testing"
+
+        - name: generate letsencrypt certificate
+          shell: certbot certonly --agree-tos --staging -a standalone -m {{ cfemail }} -d {{domainLong}} -d www.{{domainLong}}
+          args:
+            creates: /etc/letsencrypt/live/{{ domainLong }}
+          when: LetsEncrypt != "production"
 
 
         - name: start services

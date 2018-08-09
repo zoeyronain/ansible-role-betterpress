@@ -23,7 +23,7 @@
           private: no
 
         - name: "cfemail"
-          prompt: "What is your cloudflare email?"
+          prompt: "What is your letsencrypt email (for sending renewal notices)?"
           private: no
 
         - name: "cfapi"
@@ -246,6 +246,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
+          when: cfapi is not defined
 
         - name: ipv4 A record
           cloudflare_dns:
@@ -255,6 +256,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
+          when: cfapi is not defined
 
         - name: ipv6 www record
           cloudflare_dns:
@@ -265,7 +267,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: ipv6 != ''
+          when: (ipv6 != '' and cfapi is not defined)
 
         - name: ipv6 record
           cloudflare_dns:
@@ -275,7 +277,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: ipv6 != ''
+          when: (ipv6 != '' and cfapi is not defined)
 
         - name: Fetch random salts for WordPress config
           local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/

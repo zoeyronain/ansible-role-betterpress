@@ -162,7 +162,7 @@
               - MySQL-python
 
         - name: install Certbot
-          when: (cfemail is defined)
+          when: (cfemail is defined and ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           yum: name=certbot state=present
 
         - name: install packages
@@ -184,11 +184,10 @@
             - mysql-server
             - mysql-client
             - libmysqlclient-dev
-            - certbot
             - python-mysqldb
 
         - name: install Certbot
-          when: (cfemail is defined)
+          when: (cfemail is defined and ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           apt: name=certbot state=present
 
 

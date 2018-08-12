@@ -56,7 +56,7 @@
           prompt: "Generate production or testing letsencrypt cert? (testing certs are invalid, but won't get you banned for testing)"
           default: production
           private: no
-          when: cfemail is defined
+          when: cfemail !=""
 
 
       tasks:
@@ -64,7 +64,7 @@
 
 
 
-        - name: allow the installation of PHP 7.1 on ubuntu 17.04
+        - name: allow the installation of PHP 7.2 on ubuntu 17.04
           apt_repository:
             repo: 'ppa:ondrej/php'
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
@@ -162,7 +162,7 @@
               - MySQL-python
 
         - name: install Certbot
-          when: (cfemail is defined and ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          when: (cfemail !="" and ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           yum: name=certbot state=present
 
         - name: install packages
@@ -187,7 +187,7 @@
             - python-mysqldb
 
         - name: install Certbot
-          when: (cfemail is defined and ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+          when: (cfemail != "" and ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           apt: name=certbot state=present
 
 
@@ -253,7 +253,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: cfapi is defined
+          when: cfapi == ""
 
         - name: ipv4 A record
           cloudflare_dns:
@@ -263,7 +263,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: cfapi is defined
+          when: cfapi == ""
 
         - name: ipv6 www record
           cloudflare_dns:
@@ -274,7 +274,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: (ipv6 != '' and cfapi is defined)
+          when: (ipv6 != '' and cfapi == "")
 
         - name: ipv6 record
           cloudflare_dns:
@@ -284,7 +284,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: (ipv6 != '' and cfapi is defined)
+          when: (ipv6 != '' and cfapi == "")
 
         - name: Fetch random salts for WordPress config
           local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
@@ -402,19 +402,19 @@
           shell: certbot certonly --agree-tos -a standalone -m {{ cfemail }} -d {{domainLong}} -d www.{{domainLong}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
-          when: LetsEncrypt != "testing and cfemail is defined "
+          when: (LetsEncrypt != "testing" and cfemail != ""
 
         - name: generate letsencrypt certificate
           shell: certbot certonly --agree-tos --staging -a standalone -m {{ cfemail }} -d {{domainLong}} -d www.{{domainLong}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
-          when: LetsEncrypt != "production and cfemail is defined"
+          when: LetsEncrypt != "production" and cfemail != ""
 
 
         - name: start services
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           service:
-            name: php7.1-fpm
+            name: php7.2-fpm
             state: started
 
 
@@ -430,14 +430,14 @@
             name: letsencrypt_renewal
             special_time: weekly
             job: service nginx stop && letsencrypt --renew certonly -n --staging -a standalone -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart
-            when: LetsEncrypt != "testing and cfemail is defined"
+            when: LetsEncrypt != "testing" and cfemail !=""
 
         - name: Add letsencrypt cronjob for production cert renewal
           cron:
             name: letsencrypt_renewal
             special_time: weekly
             job: service nginx stop && letsencrypt --staging --renew certonly -n -a standalone -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart
-            when: LetsEncrypt != "production and cfemail is defined"
+            when: LetsEncrypt != "production"  and cfemail != ""
 
 
         - name: restart NGINX for new config to take effect

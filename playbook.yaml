@@ -56,7 +56,7 @@
           prompt: "Generate production or testing letsencrypt cert? (testing certs are invalid, but won't get you banned for testing)"
           default: production
           private: no
-          when: cfemail != ""
+          when: cfemail is defined
 
 
       tasks:

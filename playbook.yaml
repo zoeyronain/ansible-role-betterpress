@@ -128,7 +128,7 @@
               - MySQL-python
 
         - name: install Certbot
-          when: ({{cfemail}} !="" and ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          when: (cfemail is defined and ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           yum: name=certbot state=present
 
         - name: install packages
@@ -153,7 +153,7 @@
             - python-mysqldb
 
         - name: install Certbot
-          when: ({{cfemail}} != "" and ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+          when: (cfemail is defined and ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           apt: name=certbot state=present
 
 
@@ -219,7 +219,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: "{{cfapi}}" !=""
+          when: cfapi is defined
 
         - name: ipv4 A record
           cloudflare_dns:
@@ -229,7 +229,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: "{{cfapi}}" !=""
+          when: cfapi is defined
 
         - name: ipv6 www record
           cloudflare_dns:
@@ -240,7 +240,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: ("{{ipv6}}" != '' and "{{cfapi}}" !=")
+          when: (ipv6 is defined and cfapi is defined)
 
         - name: ipv6 record
           cloudflare_dns:
@@ -250,7 +250,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: ("{{ipv6}}" != '' and "{{cfapi}}" !="")
+          when: (ipv6 is defined and cfapi is defined)
 
         - name: Fetch random salts for WordPress config
           local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
@@ -259,31 +259,31 @@
 
         - name: create letsencrypt directory
           file: name=/var/www/letsencrypt state=directory
-          when: "{{cfemail}}" != ""
+          when: cfemail is defined
 
         - name: Install nginx config for HTTPS site
           template:
               src: configs/nginxconfigDEBIAN.conf.j2
               dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
-          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and "{{cfemail}}" is defined)
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and cfemail is defined)
 
         - name: Install nginx config for HTTP site
           template:
               src: configs/nginxHTTPconfigDEBIAN.conf.j2
               dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
-          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and "{{cfemail}}" != "")
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and cfemail is defined)
 
         - name: Install nginx config for HTTPS site
           template:
               src: configs/nginxconfigCENTOS.conf.j2
               dest: "/etc/nginx/conf.d/{{domainLong}}.conf"
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and "{{cfemail}}" != "")
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and cfemail is defined)
 
         - name: Install nginx config for HTTP site
           template:
             src: configs/nginxHTTPconfigCENTOS.conf.j2
             dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
-            when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and "{{cfemail}}" != "")
+            when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and cfemail is defined)
 
 
 
@@ -368,13 +368,13 @@
           shell: certbot certonly --agree-tos -a standalone -m {{ cfemail }} -d {{domainLong}} -d www.{{domainLong}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
-          when: "({{LetsEncrypt}}" != "testing" and "{{cfemail}}" != "")
+          when: (LetsEncrypt != "Production" and cfemail is defined)
 
         - name: generate letsencrypt certificate
           shell: certbot certonly --agree-tos --staging -a standalone -m {{ cfemail }} -d {{domainLong}} -d www.{{domainLong}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
-          when: ("{{LetsEncrypt}}" != "production" and "{{cfemail}}" != "")
+          when: (LetsEncrypt != "testing" and cfemail is defined)
 
 
         - name: start services
@@ -396,14 +396,14 @@
             name: letsencrypt_renewal
             special_time: weekly
             job: service nginx stop && letsencrypt --renew certonly -n --staging -a standalone -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart
-            when: ("{{LetsEncrypt}}" != "testing" and "{{cfemail}}" !="")
+            when: (LetsEncrypt != "Production" and cfemail is defined)
 
         - name: Add letsencrypt cronjob for production cert renewal
           cron:
             name: letsencrypt_renewal
             special_time: weekly
-            job: service nginx stop && letsencrypt --staging --renew certonly -n -a standalone -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart
-            when: ("{{LetsEncrypt}}" != "production"  and "{{cfemail}}" != "")
+            job: service nginx stop && letsencrypt --renew certonly -n -a standalone -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart
+            when: (LetsEncrypt != "Testing" and cfemail is defined)
 
 
         - name: restart NGINX for new config to take effect

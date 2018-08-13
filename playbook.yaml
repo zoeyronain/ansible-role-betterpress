@@ -9,39 +9,12 @@
         db_password: "{{ lookup('password', './passwordfile chars=ascii_letters,digits,hexdigits,punctuation') }}"
 
 
-<<<<<<< HEAD
-        - name: "domainLong"
-          prompt: "What is the domain with .com/.net?"
-          private: no
-
-        - name: "cfemail"
-          prompt: "What is your letsencrypt email (for sending renewal notices)?"
-          private: no
-
-        - name: "cfapi"
-          prompt: "What is your cloudflare API key?"
-          private: no
-
-        - name: "mysqluser"
-          prompt: "What is your mysql user (that can create users and databases)?"
-          default: root
-          private: no
-=======
->>>>>>> testCF
 
       vars_prompt:
         - name: "mysqlpassword"
           prompt: "What is the password for your mysql user?"
           private: no
       tasks:
-
-        - name: include vars of variables.yaml
-          include_vars:
-            file: variables.yaml
-
-
-
-
 
         - name: allow the installation of PHP 7.2 on ubuntu 17.04
           apt_repository:
@@ -53,6 +26,10 @@
             path: ./variables.yaml
           register: var
           failed_when: var.stat.exists == False
+          
+        - name: include vars of variables.yaml
+          include_vars:
+            file: variables.yaml
 
         - name: ensure that nginxconfig.conf exists
           stat:
@@ -238,11 +215,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-<<<<<<< HEAD
-          when: cfapi is not defined
-=======
           when: cfapi is defined
->>>>>>> testCF
 
         - name: ipv4 A record
           cloudflare_dns:
@@ -253,12 +226,8 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-<<<<<<< HEAD
-          when: cfapi is not defined
-=======
           when: cfapi is defined
 
->>>>>>> testCF
 
         - name: ipv6 www record
           cloudflare_dns:
@@ -269,11 +238,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-<<<<<<< HEAD
-          when: (ipv6 != '' and cfapi is not defined)
-=======
           when: (ipv6 is defined and cfapi is defined)
->>>>>>> testCF
 
         - name: ipv6 record
           cloudflare_dns:
@@ -284,12 +249,8 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-<<<<<<< HEAD
-          when: (ipv6 != '' and cfapi is not defined)
-=======
           when: (ipv6 is defined and cfapi is defined)
 
->>>>>>> testCF
 
         - name: Fetch random salts for WordPress config
           local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
@@ -442,7 +403,7 @@
             name: letsencrypt_renewal
             special_time: weekly
             job: service nginx stop && letsencrypt --renew certonly -n -a standalone -m {{ cfemail }} --agree-tos -d {{fullDomain}} -d www.{{fullDomain}} && service nginx restart
-          when: (LetsEncrypt == "Testing" and leEmail is defined)
+          when: (LetsEncrypt != "Testing" and leEmail is defined)
 
 
         - name: restart NGINX for new config to take effect

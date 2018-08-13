@@ -19,7 +19,7 @@
         - name: include vars of variables.yaml
           include_vars:
             file: variables.yaml
-          
+
 
 
 
@@ -32,8 +32,8 @@
         - name: ensure variables exist
           stat:
             path: ./variables.yaml
-            register: var
-            failed_when: var.stat.exists == False
+          register: var
+          failed_when: var.stat.exists == False
 
         - name: ensure that nginxconfig.conf exists
           stat:

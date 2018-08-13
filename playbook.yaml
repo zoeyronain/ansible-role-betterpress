@@ -212,7 +212,7 @@
 
         - name: ipv4 www
           cloudflare_dns:
-            zone: zoeyrae.com
+            zone: {{rootDomain}}
             record: www.{{domainShort}}
             type: A
             value: "{{ipv4}}"
@@ -223,18 +223,20 @@
 
         - name: ipv4 A record
           cloudflare_dns:
-            zone: "{{domainLong}}"
+            zone: "{{rootDomain}}"
+            record: "{{domainShort}}"
             type: A
             value: "{{ipv4}}"
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
           when: cfapi is defined
+          default: @
 
         - name: ipv6 www record
           cloudflare_dns:
-            zone: "{{domainLong}}"
-            record: www
+            zone: "{{rootDomain}}"
+            record: www.{{domainShort}}
             type: AAAA
             value: "{{ipv6}}"
             account_email: "{{cfemail}}"
@@ -244,13 +246,15 @@
 
         - name: ipv6 record
           cloudflare_dns:
-            zone: "{{domainLong}}"
+            zone: "{{rootDomain}}"
+            record: "{{domainShort}}"
             type: AAAA
             value: "{{ipv6}}"
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
           when: (ipv6 is defined and cfapi is defined)
+          default: @
 
         - name: Fetch random salts for WordPress config
           local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/

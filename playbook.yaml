@@ -231,7 +231,7 @@
             account_api_token: "{{cfapi}}"
           register: record
           when: cfapi is defined
-          default: @
+          default: "@"
 
         - name: ipv6 www record
           cloudflare_dns:
@@ -254,7 +254,7 @@
             account_api_token: "{{cfapi}}"
           register: record
           when: (ipv6 is defined and cfapi is defined)
-          default: @
+          default: "@"
 
         - name: Fetch random salts for WordPress config
           local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/

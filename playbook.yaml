@@ -10,12 +10,17 @@
 
 
 
-
+      vars_prompt:
+        - name: "mysqlpassword"
+          prompt: "What is the password for your mysql user?"
+          private: no
       tasks:
 
         - name: include vars of variables.yaml
           include_vars:
             file: variables.yaml
+
+
 
 
         - name: allow the installation of PHP 7.2 on ubuntu 17.04

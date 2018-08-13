@@ -11,6 +11,7 @@ To run this:
 Install git and ansible (using yum or apt-get)
 git clone https://github.com/ZoeyCluff/BetterPress.git
 cd BetterPress
+change variables.yaml.default to variables.yaml and fill out with your information
 ansible-playbook -i ./hosts playbook.yaml
-Answer the questions, wait 5-10 minutes and BAM, Welcome to the famous five-minute WordPress installation process!
+
 ```

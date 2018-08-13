@@ -369,16 +369,16 @@
               proto: tcp
 
         - name: generate letsencrypt certificate
-          shell: certbot certonly --agree-tos -a standalone -m {{ cfemail }} -d {{fullDomain}} -d www.{{fullDomain}}
+          shell: certbot certonly --agree-tos -a standalone -m {{ leEmail }} -d {{fullDomain}} -d www.{{fullDomain}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
-          when: (LetsEncrypt != "Testing" and cfemail is defined)
+          when: (LetsEncrypt != "Testing" and leEmail is defined)
 
         - name: generate letsencrypt certificate
-          shell: certbot certonly --agree-tos --staging -a standalone -m {{ cfemail }} -d {{fullDomain}} -d www.{{fullDomain}}
+          shell: certbot certonly --agree-tos --staging -a standalone -m {{ leEmail }} -d {{fullDomain}} -d www.{{fullDomain}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
-          when: (LetsEncrypt != "Production" and cfemail is defined)
+          when: (LetsEncrypt != "Production" and leEmail is defined)
 
 
         - name: start services
@@ -400,14 +400,14 @@
             name: letsencrypt_renewal
             special_time: weekly
             job: service nginx stop && letsencrypt --renew certonly -n --staging -a standalone -m {{ cfemail }} --agree-tos -d {{fullDomain}} -d www.{{fullDomain}} && service nginx restart
-          when: (LetsEncrypt != "Production" and cfemail is defined)
+          when: (LetsEncrypt != "Production" and leEmail is defined)
 
         - name: Add letsencrypt cronjob for production cert renewal
           cron:
             name: letsencrypt_renewal
             special_time: weekly
             job: service nginx stop && letsencrypt --renew certonly -n -a standalone -m {{ cfemail }} --agree-tos -d {{fullDomain}} -d www.{{fullDomain}} && service nginx restart
-          when: (LetsEncrypt == "Testing" and cfemail is defined)
+          when: (LetsEncrypt == "Testing" and leEmail is defined)
 
 
         - name: restart NGINX for new config to take effect

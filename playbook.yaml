@@ -219,7 +219,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: "{{cfapi}} !="""
+          when: "{{cfapi}}" !="
 
         - name: ipv4 A record
           cloudflare_dns:
@@ -229,7 +229,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: "{{cfapi}} !="""
+          when: "{{cfapi}}" !=""
 
         - name: ipv6 www record
           cloudflare_dns:
@@ -240,7 +240,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: ("{{ipv6}} != '' and {{cfapi}} !=""")
+          when: ("{{ipv6}}" != '' and "{{cfapi}}" !=")
 
         - name: ipv6 record
           cloudflare_dns:
@@ -250,7 +250,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: ("{{ipv6}} != '' and {{cfapi}} !=""")
+          when: ("{{ipv6}}" != '' and "{{cfapi}}" !="")
 
         - name: Fetch random salts for WordPress config
           local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
@@ -259,7 +259,7 @@
 
         - name: create letsencrypt directory
           file: name=/var/www/letsencrypt state=directory
-          when: "{{cfemail}} != """
+          when: "{{cfemail}}" != ""
 
         - name: Install nginx config for HTTPS site
           template:

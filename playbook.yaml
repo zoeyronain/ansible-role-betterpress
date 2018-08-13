@@ -128,7 +128,7 @@
               - MySQL-python
 
         - name: install Certbot
-          when: (cfemail is defined and ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          when: (leEmail is defined and ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           yum: name=certbot state=present
 
         - name: install packages
@@ -153,7 +153,7 @@
             - python-mysqldb
 
         - name: install Certbot
-          when: (cfemail is defined and ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+          when: (leEmail is defined and ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           apt: name=certbot state=present
 
 
@@ -231,7 +231,7 @@
             account_api_token: "{{cfapi}}"
           register: record
           when: cfapi is defined
-          default: "@"
+
 
         - name: ipv6 www record
           cloudflare_dns:
@@ -254,7 +254,7 @@
             account_api_token: "{{cfapi}}"
           register: record
           when: (ipv6 is defined and cfapi is defined)
-          default: "@"
+
 
         - name: Fetch random salts for WordPress config
           local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
@@ -263,31 +263,31 @@
 
         - name: create letsencrypt directory
           file: name=/var/www/letsencrypt state=directory
-          when: cfemail is defined
+          when: leEmail is defined
 
         - name: Install nginx config for HTTPS site
           template:
               src: configs/nginxconfigDEBIAN.conf.j2
               dest: "/etc/nginx/sites-enabled/{{fullDomain}}.conf"
-          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and cfemail is defined)
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and leEmail is defined)
 
         - name: Install nginx config for HTTP site
           template:
               src: configs/nginxHTTPconfigDEBIAN.conf.j2
               dest: "/etc/nginx/sites-enabled/{{fullDomain}}.conf"
-          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and cfemail is not defined)
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and leEmail is not defined)
 
         - name: Install nginx config for HTTPS site
           template:
               src: configs/nginxconfigCENTOS.conf.j2
               dest: "/etc/nginx/conf.d/{{fullDomain}}.conf"
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and cfemail is defined)
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and leEmail is defined)
 
         - name: Install nginx config for HTTP site
           template:
             src: configs/nginxHTTPconfigCENTOS.conf.j2
             dest: "/etc/nginx/sites-enabled/{{fullDomain}}.conf"
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and cfemail is not defined)
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and leEmail is not defined)
 
 
 

@@ -275,7 +275,7 @@
           template:
               src: configs/nginxHTTPconfigDEBIAN.conf.j2
               dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
-          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and cfemail is defined)
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and cfemail is not defined)
 
         - name: Install nginx config for HTTPS site
           template:
@@ -287,7 +287,7 @@
           template:
             src: configs/nginxHTTPconfigCENTOS.conf.j2
             dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
-            when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and cfemail is defined)
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and cfemail is not defined)
 
 
 
@@ -400,14 +400,14 @@
             name: letsencrypt_renewal
             special_time: weekly
             job: service nginx stop && letsencrypt --renew certonly -n --staging -a standalone -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart
-            when: (LetsEncrypt != "Production" and cfemail is defined)
+          when: (LetsEncrypt != "Production" and cfemail is defined)
 
         - name: Add letsencrypt cronjob for production cert renewal
           cron:
             name: letsencrypt_renewal
             special_time: weekly
             job: service nginx stop && letsencrypt --renew certonly -n -a standalone -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart
-            when: (LetsEncrypt != "Testing" and cfemail is defined)
+          when: (LetsEncrypt != "Testing" and cfemail is defined)
 
 
         - name: restart NGINX for new config to take effect

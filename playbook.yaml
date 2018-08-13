@@ -25,10 +25,12 @@
         - name: "cfemail"
           prompt: "What is your letsencrypt email (for sending renewal notices)? Leave blank (hit enter) to skip letsencrypt cert generation"
           private: no
+          register: cfemail
 
         - name: "cfapi"
           prompt: "What is your cloudflare API key? Leave blank (hit enter) to skip adding DNS records to Cloudflare"
           private: no
+          register: cfapi
 
         - name: "mysqluser"
           prompt: "What is your mysql user (that can create users and databases)?"

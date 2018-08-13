@@ -19,7 +19,7 @@
 
 server {
          client_max_body_size 100m;
-         root /var/www/{{domainLong}};
+         root /var/www/{{fullDomain}};
          index index.php index.html index.htm;
          listen 443 http2 ssl;
          listen   [::]:443 http2 ssl;
@@ -36,7 +36,7 @@ server {
          ssl_stapling_verify on;
         add_header Strict-Transport-Security max-age=15768000;
         # Make site accessible from http://localhost/
-        server_name {{domainLong}} www.{{domainLong}} default_server;
+        server_name {{fullDomain}} www.{{fullDomain}} default_server;
 
         location / {
                 # First attempt to serve request as file, then
@@ -89,10 +89,10 @@ server {
 
 server {
         listen 80;
-       server_name {{domainLong}} www.{{domainLong}};
+       server_name {{fullDomain}} www.{{fullDomain}};
 
 
        location / {
-           rewrite ^ https://{{ domainLong }}$request_uri? permanent;
+           rewrite ^ https://{{fullDomain}}$request_uri? permanent;
 }
 }

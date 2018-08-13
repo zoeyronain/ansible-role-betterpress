@@ -400,14 +400,14 @@
             name: letsencrypt_renewal
             special_time: weekly
             job: service nginx stop && letsencrypt --renew certonly -n --staging -a standalone -m {{ cfemail }} --agree-tos -d {{fullDomain}} -d www.{{fullDomain}} && service nginx restart
-          when: (LetsEncrypt == Testing and cfemail is defined)
+          when: (LetsEncrypt != "Production" and cfemail is defined)
 
         - name: Add letsencrypt cronjob for production cert renewal
           cron:
             name: letsencrypt_renewal
             special_time: weekly
             job: service nginx stop && letsencrypt --renew certonly -n -a standalone -m {{ cfemail }} --agree-tos -d {{fullDomain}} -d www.{{fullDomain}} && service nginx restart
-          when: (LetsEncrypt == Production and cfemail is defined)
+          when: (LetsEncrypt == "Testing" and cfemail is defined)
 
 
         - name: restart NGINX for new config to take effect

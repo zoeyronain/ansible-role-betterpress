@@ -219,7 +219,7 @@
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
           register: record
-          when: "{{cfapi}}" !="
+          when: "{{cfapi}}" !=""
 
         - name: ipv4 A record
           cloudflare_dns:

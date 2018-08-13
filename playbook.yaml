@@ -3,62 +3,14 @@
       connection: local
       become: true
 
-
-
-
-
-
-
+    - name: include vars of variables.yaml
+      include_vars:
+        file: variables.yaml
 
       vars:
         db_password: "{{ lookup('password', './passwordfile chars=ascii_letters,digits,hexdigits,punctuation') }}"
 
-      vars_prompt:
-        - name: "domainShort"
-          prompt: "What is the domain (without .com/.net)?"
-          private: no
 
-        - name: "domainLong"
-          prompt: "What is the domain with .com/.net?"
-          private: no
-
-        - name: "cfemail"
-          prompt: "What is your letsencrypt email (for sending renewal notices)? Leave blank (hit enter) to skip letsencrypt cert generation"
-          private: no
-          register: cfemail
-
-        - name: "cfapi"
-          prompt: "What is your cloudflare API key? Leave blank (hit enter) to skip adding DNS records to Cloudflare"
-          private: no
-          register: cfapi
-
-        - name: "mysqluser"
-          prompt: "What is your mysql user (that can create users and databases)?"
-          default: root
-          private: no
-
-        - name: "mysqlpassword"
-          prompt: "What is the password for your mysql user?"
-          private: no
-
-        - name: "mysqlHost"
-          prompt: "What is the mysql Server IP / hostname?"
-          default: 127.0.0.1
-          private: no
-
-        - name: "ipv4"
-          prompt: "What is the ipv4 address of your server?"
-          private: no
-
-        - name: "ipv6"
-          prompt: "What is the ipv6 address of your server?"
-          private: no
-
-        - name: "LetsEncrypt"
-          prompt: "Generate production or testing letsencrypt cert? (testing certs are invalid, but won't get you banned for testing)"
-          default: production
-          private: no
-          when: cfemail !=""
 
 
       tasks:
@@ -307,19 +259,19 @@
           template:
               src: configs/nginxHTTPconfigDEBIAN.conf.j2
               dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
-          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and cfemail is not defined)
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and cfemail != "")
 
         - name: Install nginx config for HTTPS site
           template:
               src: configs/nginxconfigCENTOS.conf.j2
               dest: "/etc/nginx/conf.d/{{domainLong}}.conf"
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and cfemail is defined)
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and cfemail != "")
 
         - name: Install nginx config for HTTP site
           template:
             src: configs/nginxHTTPconfigCENTOS.conf.j2
             dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
-            when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and cfemail is not defined)
+            when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and cfemail != "")
 
 
 
@@ -404,13 +356,13 @@
           shell: certbot certonly --agree-tos -a standalone -m {{ cfemail }} -d {{domainLong}} -d www.{{domainLong}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
-          when: (LetsEncrypt != "testing" and cfemail != ""
+          when: (LetsEncrypt != "testing" and cfemail != "")
 
         - name: generate letsencrypt certificate
           shell: certbot certonly --agree-tos --staging -a standalone -m {{ cfemail }} -d {{domainLong}} -d www.{{domainLong}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
-          when: LetsEncrypt != "production" and cfemail != ""
+          when: (LetsEncrypt != "production" and cfemail != "")
 
 
         - name: start services
@@ -432,14 +384,14 @@
             name: letsencrypt_renewal
             special_time: weekly
             job: service nginx stop && letsencrypt --renew certonly -n --staging -a standalone -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart
-            when: LetsEncrypt != "testing" and cfemail !=""
+            when: (LetsEncrypt != "testing" and cfemail !="")
 
         - name: Add letsencrypt cronjob for production cert renewal
           cron:
             name: letsencrypt_renewal
             special_time: weekly
             job: service nginx stop && letsencrypt --staging --renew certonly -n -a standalone -m {{ cfemail }} --agree-tos -d {{ domainLong }} -d www.{{domainLong}} && service nginx restart
-            when: LetsEncrypt != "production"  and cfemail != ""
+            when: (LetsEncrypt != "production"  and cfemail != "")
 
 
         - name: restart NGINX for new config to take effect

@@ -1,6 +1,7 @@
 domainShort: #No TLD (.com, .net) (ie github or subdomain name (ie site(.github)))
 domainLong: #With www (ie www.github)
 rootDomain: # (ie github.com)
+fullDomain: # (full domain ie github.com or subdomain.github.com)
 cfemail: # Email used for cloudflare_dns
 cfapi: # Cloudflare API key
 ipv4: # IPV4 (10.10.0.1 style)

@@ -19,6 +19,7 @@
         - name: include vars of variables.yaml
           include_vars:
             file: variables.yaml
+          default: ""
 
 
 

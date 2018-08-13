@@ -213,7 +213,7 @@
         - name: ipv4 www
           cloudflare_dns:
             zone: "{{rootDomain}}"
-            record: www.test3
+            record: "{{domainLong}}"
             type: A
             value: "{{ipv4}}"
             account_email: "{{cfemail}}"
@@ -236,7 +236,7 @@
         - name: ipv6 www record
           cloudflare_dns:
             zone: "{{rootDomain}}"
-            record: www."{{domainShort}}"
+            record: "{{domainLong}}"
             type: AAAA
             value: "{{ipv6}}"
             account_email: "{{cfemail}}"

@@ -1,5 +1,5 @@
 domainShort: #No TLD (.com, .net) (ie github or subdomain name (ie site(.github)))
-domainLong: #With TLD (no www) (ie github.com or site.github.com)
+domainLong: #With www (ie www.github)
 rootDomain: # (ie github.com)
 cfemail: # Email used for cloudflare_dns
 cfapi: # Cloudflare API key

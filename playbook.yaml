@@ -212,8 +212,8 @@
 
         - name: ipv4 www
           cloudflare_dns:
-            zone: "{{domainLong}}"
-            record: www
+            zone: zoeyrae.com
+            record: www.{{domainShort}}
             type: A
             value: "{{ipv4}}"
             account_email: "{{cfemail}}"

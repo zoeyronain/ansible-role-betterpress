@@ -26,7 +26,7 @@
             path: ./variables.yaml
           register: var
           failed_when: var.stat.exists == False
-          
+
         - name: include vars of variables.yaml
           include_vars:
             file: variables.yaml
@@ -214,7 +214,7 @@
             value: "{{ipv4}}"
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
-          register: record
+          register: ipv4w
           when: cfapi is defined
 
         - name: ipv4 A record
@@ -225,7 +225,7 @@
             value: "{{ipv4}}"
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
-          register: record
+          register: ipv4
           when: cfapi is defined
 
 
@@ -237,7 +237,7 @@
             value: "{{ipv6}}"
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
-          register: record
+          register: ipv6w
           when: (ipv6 is defined and cfapi is defined)
 
         - name: ipv6 record
@@ -248,7 +248,7 @@
             value: "{{ipv6}}"
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
-          register: record
+          register: ipv6
           when: (ipv6 is defined and cfapi is defined)
 
 
@@ -368,13 +368,13 @@
           shell: certbot certonly --agree-tos -a standalone -m {{ leEmail }} -d {{fullDomain}} -d www.{{fullDomain}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
-          when: (LetsEncrypt != "Testing" and leEmail is defined)
+          when: (LetsEncrypt != "Testing" and leEmail is defined and )
 
         - name: generate letsencrypt certificate
           shell: certbot certonly --agree-tos --staging -a standalone -m {{ leEmail }} -d {{fullDomain}} -d www.{{fullDomain}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
-          when: (LetsEncrypt != "Production" and leEmail is defined)
+          when: (LetsEncrypt != "Production" and leEmail is defined and ipv4w )
 
 
         - name: start services

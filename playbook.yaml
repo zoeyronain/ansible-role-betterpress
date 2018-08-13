@@ -213,7 +213,7 @@
         - name: ipv4 www
           cloudflare_dns:
             zone: "{{rootDomain}}"
-            record: www."{{domainShort}}"
+            record: www.test3
             type: A
             value: "{{ipv4}}"
             account_email: "{{cfemail}}"

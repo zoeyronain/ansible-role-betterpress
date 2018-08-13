@@ -188,7 +188,7 @@
         - name: create www folder
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           file:
-            path: "/var/www/{{domainLong}}"
+            path: "/var/www/{{fullDomain}}"
             state: directory
             mode: 0755
             owner: www-data
@@ -197,7 +197,7 @@
         - name: create www folder
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           file:
-            path: "/var/www/{{domainLong}}"
+            path: "/var/www/{{fullDomain}}"
             state: directory
             owner: apache
             group: apache
@@ -205,7 +205,7 @@
         - name: extract wordpress
           unarchive:
             src: https://wordpress.org/latest.tar.gz
-            dest: "/var/www/{{domainLong}}"
+            dest: "/var/www/{{fullDomain}}"
             remote_src: yes
             extra_opts: [--strip-components=1]
 
@@ -268,25 +268,25 @@
         - name: Install nginx config for HTTPS site
           template:
               src: configs/nginxconfigDEBIAN.conf.j2
-              dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
+              dest: "/etc/nginx/sites-enabled/{{fullDomain}}.conf"
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and cfemail is defined)
 
         - name: Install nginx config for HTTP site
           template:
               src: configs/nginxHTTPconfigDEBIAN.conf.j2
-              dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
+              dest: "/etc/nginx/sites-enabled/{{fullDomain}}.conf"
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and cfemail is not defined)
 
         - name: Install nginx config for HTTPS site
           template:
               src: configs/nginxconfigCENTOS.conf.j2
-              dest: "/etc/nginx/conf.d/{{domainLong}}.conf"
+              dest: "/etc/nginx/conf.d/{{fullDomain}}.conf"
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and cfemail is defined)
 
         - name: Install nginx config for HTTP site
           template:
             src: configs/nginxHTTPconfigCENTOS.conf.j2
-            dest: "/etc/nginx/sites-enabled/{{domainLong}}.conf"
+            dest: "/etc/nginx/sites-enabled/{{fullDomain}}.conf"
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and cfemail is not defined)
 
 
@@ -306,22 +306,22 @@
         - name: Install Wordpress config
           template:
             src: configs/wp-config-sample.php.j2
-            dest: "/var/www/{{domainLong}}/wp-config.php"
+            dest: "/var/www/{{fullDomain}}/wp-config.php"
 
         - name: fix permissions the lazy way
           shell:
-            chdir: "/var/www/{{domainLong}}"
+            chdir: "/var/www/{{fullDomain}}"
             cmd: find . -type f -exec chmod 664 {} +
 
         - name: fix permissions the lazy way
           shell:
-            chdir: "/var/www/{{domainLong}}"
+            chdir: "/var/www/{{fullDomain}}"
             cmd: find . -type d -exec chmod 775 {} +
 
         - name: change folder permissions
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           file:
-            path: "/var/www/{{domainLong}}"
+            path: "/var/www/{{fullDomain}}"
             owner: www-data
             group: www-data
             recurse: yes
@@ -329,7 +329,7 @@
         - name: change folder permissions
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           file:
-            path: "/var/www/{{domainLong}}"
+            path: "/var/www/{{fullDomain}}"
             owner: apache
             group: apache
             recurse: yes

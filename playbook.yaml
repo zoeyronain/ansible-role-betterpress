@@ -3,9 +3,7 @@
       connection: local
       become: true
 
-    - name: include vars of variables.yaml
-      include_vars:
-        file: variables.yaml
+
 
       vars:
         db_password: "{{ lookup('password', './passwordfile chars=ascii_letters,digits,hexdigits,punctuation') }}"
@@ -15,7 +13,9 @@
 
       tasks:
 
-
+        - name: include vars of variables.yaml
+          include_vars:
+            file: variables.yaml
 
 
         - name: allow the installation of PHP 7.2 on ubuntu 17.04

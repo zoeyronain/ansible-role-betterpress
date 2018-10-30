@@ -16,10 +16,10 @@
           private: no
       tasks:
 
-        - name: allow the installation of PHP 7.2 on ubuntu 17.04
+        - name: allow the installation of PHP 7.3 on ubuntu 18.04
           apt_repository:
-            repo: 'ppa:ondrej/php'
-          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+           repo: 'ppa:ondrej/php'
+           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
         - name: ensure variables exist
           stat:
@@ -132,16 +132,16 @@
           apt: name='{{ item }}' state=present
           with_items:
             - nginx
-            - php7.2
-            - php7.2-mysql
-            - php7.2-fpm
-            - php7.2-cli
-            - php7.2-gd
-            - php7.2-json
-            - php7.2-mbstring
-            - php7.2-readline
-            - php7.2-xml
-            - php7.2-zip
+            - php7.3
+            - php7.3-mysql
+            - php7.3-fpm
+            - php7.3-cli
+            - php7.3-gd
+            - php7.3-json
+            - php7.3mbstring
+            - php7.3-readline
+            - php7.3-xml
+            - php7.3-zip
             - python-pip
             - mysql-server
             - mysql-client
@@ -380,7 +380,7 @@
         - name: start services
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           service:
-            name: php7.2-fpm
+            name: php7.3-fpm
             state: started
 
 

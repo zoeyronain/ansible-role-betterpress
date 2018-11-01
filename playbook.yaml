@@ -46,7 +46,7 @@
         - name: allow the installation of PHP 7.3 on ubuntu 18.04
           apt_repository:
              repo: 'ppa:ondrej/php'
-             when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
         - name: ensure ssl dhparam exists
           stat:

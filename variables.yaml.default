@@ -1,12 +1,10 @@
-domainShort: 
-domainLong: 
-rootDomain: 
-fullDomain: 
-
-leEmail: 
-
-ipv4: 
-ipv6: 
-LetsEncrypt: 
-mysqluser: 
-mysqlHost:
+domainShort: '(Domain without the suffex (ie .com))'
+fullDomain: '(Domain with the suffex)'
+leEmail: '(Email for LetsEncrypt renewal Notices (you shouldn't get one if all goes well, but its a good way to know if something gets screwed up before your site goes offline))'
+cfapi: '(Cloudflare API key)'
+cfemail: '(Cloudflare email address)'
+ipv4: '(Server IPV4 Address)'
+ipv6: '(Server IPV6 Address)'
+LetsEncrypt: 'Production'  # Production: use for live sites, Testing: use for testing things out (but will cause Certificate errors in your browser) - Case sensitive
+mysqluser: "(MySql User to use to create the database)"
+mysqlHost: "127.0.0.1 (MySQL DB IP address - should be 127.0.0.1  "

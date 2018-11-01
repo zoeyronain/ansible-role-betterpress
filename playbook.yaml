@@ -1,6 +1,6 @@
 ---
-    - hosts: localhost
-      connection: local
+    - hosts: local
+
       become: true
 
 
@@ -16,10 +16,6 @@
           private: no
       tasks:
 
-        - name: allow the installation of PHP 7.3 on ubuntu 18.04
-          apt_repository:
-           repo: 'ppa:ondrej/php'
-           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
         - name: ensure variables exist
           stat:
@@ -42,16 +38,19 @@
             path: ./configs/nginxconfigCENTOS.conf.j2
           register: nginx
           failed_when: nginx.stat.exists == False
+
         - name: ensure that wordpress's config exists
           stat:
             path: ./configs/wp-config-sample.php.j2
           register: wpconfig
           failed_when: wpconfig.stat.exists == False
 
-        - name: ensure ssl folder exists
-          file:
-            path: /etc/nginx/ssl/
-            state: directory
+
+        - name: allow the installation of PHP 7.3 on ubuntu 18.04
+          apt_repository:
+             repo: 'ppa:ondrej/php'
+             when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+
 
         - name: ensure ssl dhparam exists
           stat:
@@ -77,7 +76,7 @@
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           yum: name='{{ item }}' state=present
           with_items:
-            epel-release
+            - epel-release
 
         - name: install the php rpm from a remote repo
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
@@ -86,7 +85,6 @@
             state: present
 
         - name: update system
-
           apt: upgrade=dist
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
@@ -107,7 +105,7 @@
           yum: name='{{ item }}' state=present
           with_items:
               - nginx
-              - php71
+              - php73
               - php-mysqlnd
               - php-fpm
               - php-cli
@@ -368,7 +366,7 @@
           shell: certbot certonly --agree-tos -a standalone -m {{ leEmail }} -d {{fullDomain}} -d www.{{fullDomain}}
           args:
             creates: /etc/letsencrypt/live/{{ domainLong }}
-          when: (LetsEncrypt != "Testing" and leEmail is defined and )
+          when: (LetsEncrypt != "Testing" and leEmail is defined and ipv4w)
 
         - name: generate letsencrypt certificate
           shell: certbot certonly --agree-tos --staging -a standalone -m {{ leEmail }} -d {{fullDomain}} -d www.{{fullDomain}}

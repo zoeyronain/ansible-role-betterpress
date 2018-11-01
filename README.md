@@ -1,6 +1,6 @@
 # BetterPress
 
-This is a continuation of my [AutoWordpress](https://github.com/ZoeyCluff/AutoWordpress) just written in a much better function. From the start I should have used Ansible. It requires you to install one package, run a single command, answer a few questions, and you have a Wordpress site running.
+This is a continuation of [AutoWordpress](https://github.com/ZoeyCluff/AutoWordpress) just written in a much better function. From the start I should have used Ansible. It requires you to install one package, run a single command, answer a few questions, and you have a Wordpress site running.
 
 The python script was buggy, never worked the same way twice, and didn't handle errors well. This still doesn't handle ALL errors well, but most are handled gracefully (if you consider "FAILED: *Reason*" to be graceful).
 

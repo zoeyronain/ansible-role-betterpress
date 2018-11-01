@@ -25,17 +25,23 @@
           include_vars:
             file: variables.yaml
 
-        - name: ensure that nginxconfig.conf exists
+        - name: ensure that nginx.conf exists
           stat:
-            path: ./configs/nginxconfigDEBIAN.conf.j2
+            path: ./configs/nginx.conf
           register: nginx
           failed_when: nginx.stat.exists == False
 
-        - name: ensure that nginxconfigCENTOS.conf exists
+        - name: ensure that nginxconfigHTTPS.conf.j2 exists
           stat:
-            path: ./configs/nginxconfigCENTOS.conf.j2
-          register: nginx
-          failed_when: nginx.stat.exists == False
+            path: ./configs/nginxconfigHTTPS.conf.j2
+          register: nginxHTTPS
+          failed_when: nginxHTTPS.stat.exists == False
+
+        - name: ensure that nginxHTTPconfig.conf.j2 exists
+          stat:
+            path: ./configs/nginxHTTPconfig.conf.j2
+          register: nginxHTTP
+          failed_when: nginxHTTP.stat.exists == False
 
         - name: ensure that wordpress's config exists
           stat:
@@ -43,10 +49,15 @@
           register: wpconfig
           failed_when: wpconfig.stat.exists == False
 
+        - name: check if ondrej PPA exists
+          stat:
+            path: /etc/apt/sources.list.d/ppa_ondrej_php_cosmic.list
+          register: PPAExists
+
         - name: allow the installation of PHP 7.3 on ubuntu 18.04
           apt_repository:
              repo: 'ppa:ondrej/php'
-          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and PPAExists.stat.exists == False)
 
         - name: ensure ssl dhparam exists
           stat:
@@ -69,10 +80,8 @@
 
         - name: install epel first
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
-          yum: name='{{ item }}' state=present
-          with_items:
-            - epel-release
-
+          yum: name='epel-release' state=present
+          
         - name: install the php rpm from a remote repo
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           yum:
@@ -113,11 +122,7 @@
               - mariadb-server
               - mariadb
               - MySQL-python
-
-        - name: install Certbot
-          when: (leEmail is defined and ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
-          yum: name=certbot state=present
-
+        
         - name: install packages
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           apt: name='{{ item }}' state=present
@@ -129,7 +134,7 @@
             - php7.3-cli
             - php7.3-gd
             - php7.3-json
-            - php7.3mbstring
+            - php7.3-mbstring
             - php7.3-readline
             - php7.3-xml
             - php7.3-zip
@@ -140,7 +145,7 @@
             - python-mysqldb
 
         - name: install Certbot
-          when: (leEmail is defined and ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+          when: (leEmail is defined)
           apt: name=certbot state=present
 
         - name: stop nginx
@@ -197,8 +202,8 @@
 
         - name: ipv4 www
           cloudflare_dns:
-            zone: "{{rootDomain}}"
-            record: "{{domainLong}}"
+            zone: "{{fullDomain}}"
+            record: "www.{{domainShort}}"
             type: A
             value: "{{ipv4}}"
             account_email: "{{cfemail}}"
@@ -208,7 +213,7 @@
 
         - name: ipv4 A record
           cloudflare_dns:
-            zone: "{{rootDomain}}"
+            zone: "{{fullDomain}}"
             record: "{{domainShort}}"
             type: A
             value: "{{ipv4}}"
@@ -217,20 +222,20 @@
           register: ipv4
           when: cfapi is defined
 
-        - name: ipv6 www record
+        - name: ipv4 www
           cloudflare_dns:
-            zone: "{{rootDomain}}"
-            record: "{{domainLong}}"
+            zone: "{{fullDomain}}"
+            record: "www.{{domainShort}}"
             type: AAAA
             value: "{{ipv6}}"
             account_email: "{{cfemail}}"
             account_api_token: "{{cfapi}}"
-          register: ipv6w
-          when: (ipv6 is defined and cfapi is defined)
+          register: ipv4w
+          when: (cfapi is defined and ipv6 is defined)
 
         - name: ipv6 record
           cloudflare_dns:
-            zone: "{{rootDomain}}"
+            zone: "{{fullDomain}}"
             record: "{{domainShort}}"
             type: AAAA
             value: "{{ipv6}}"
@@ -249,39 +254,20 @@
 
         - name: Install nginx config for HTTPS site
           template:
-              src: configs/nginxconfigDEBIAN.conf.j2
-              dest: "/etc/nginx/sites-enabled/{{fullDomain}}.conf"
-          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and leEmail is defined)
-
-        - name: Install nginx config for HTTP site
-          template:
-              src: configs/nginxHTTPconfigDEBIAN.conf.j2
-              dest: "/etc/nginx/sites-enabled/{{fullDomain}}.conf"
-          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and leEmail is not defined)
-
-        - name: Install nginx config for HTTPS site
-          template:
-              src: configs/nginxconfigCENTOS.conf.j2
+              src: configs/nginxconfigHTTPS.conf.j2
               dest: "/etc/nginx/conf.d/{{fullDomain}}.conf"
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and leEmail is defined)
+          when: (leEmail is defined)
 
         - name: Install nginx config for HTTP site
           template:
-            src: configs/nginxHTTPconfigCENTOS.conf.j2
+            src: configs/nginxHTTPconfig.conf.j2
             dest: "/etc/nginx/sites-enabled/{{fullDomain}}.conf"
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" and leEmail is not defined)
+          when: (leEmail is not defined)
 
-        - name: Install nginx config for Debian/ Ubuntu
-          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+        - name: Install nginx config
           copy:
-              src: configs/nginxDEBIAN.conf
-              dest: "/etc/nginx/nginx.conf"
-
-        - name: Install nginx config for Debian/ Ubuntu
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
-          copy:
-              src: configs/nginxCENTOS.conf
-              dest: "/etc/nginx/nginx.conf"
+           src: configs/nginx.conf
+           dest: "/etc/nginx/nginx.conf"
 
         - name: Install Wordpress config
           template:
@@ -351,13 +337,13 @@
         - name: generate letsencrypt certificate
           shell: certbot certonly --agree-tos -a standalone -m {{ leEmail }} -d {{fullDomain}} -d www.{{fullDomain}}
           args:
-            creates: /etc/letsencrypt/live/{{ domainLong }}
+            creates: /etc/letsencrypt/live/{{ fullDomain }}
           when: (LetsEncrypt != "Testing" and leEmail is defined and ipv4w)
 
         - name: generate letsencrypt certificate
           shell: certbot certonly --agree-tos --staging -a standalone -m {{ leEmail }} -d {{fullDomain}} -d www.{{fullDomain}}
           args:
-            creates: /etc/letsencrypt/live/{{ domainLong }}
+            creates: /etc/letsencrypt/live/{{ fullDomain }}
           when: (LetsEncrypt != "Production" and leEmail is defined and ipv4w )
 
         - name: start services

@@ -81,7 +81,7 @@
         - name: install epel first
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           yum: name='epel-release' state=present
-          
+
         - name: install the php rpm from a remote repo
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
           yum:
@@ -122,7 +122,7 @@
               - mariadb-server
               - mariadb
               - MySQL-python
-        
+
         - name: install packages
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           apt: name='{{ item }}' state=present
@@ -144,6 +144,11 @@
             - libmysqlclient-dev
             - python-mysqldb
 
+        - name: install memcached
+          when: (caching is defined)
+          apt: name=memcached state=present
+
+          
         - name: install Certbot
           when: (leEmail is defined)
           apt: name=certbot state=present
@@ -274,6 +279,22 @@
             src: configs/wp-config-sample.php.j2
             dest: "/var/www/{{fullDomain}}/wp-config.php"
 
+        - name: install basic plugins
+          unarchive: 
+            src: '{{ item }}'
+            dest: "/var/www/{{fullDomain}}/wp-content/plugins"
+            remote_src: yes
+            owner: www-data
+            group: www-data
+          with_items:
+            - https://downloads.wordpress.org/plugin/gutenberg.zip
+            - https://downloads.wordpress.org/plugin/akismet.zip
+            - https://downloads.wordpress.org/plugin/wordfence.zip
+            - https://downloads.wordpress.org/plugin/wordpress-seo.zip
+            - https://downloads.wordpress.org/plugin/w3-total-cache.zip
+            - https://downloads.wordpress.org/plugin/jetpack.zip
+            - https://downloads.wordpress.org/plugin/vaultpress.zip
+
         - name: fix permissions the lazy way
           shell:
             chdir: "/var/www/{{fullDomain}}"
@@ -376,3 +397,7 @@
           service:
             name: nginx
             state: restarted
+
+
+       
+      

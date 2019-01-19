@@ -101,12 +101,14 @@
           when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "Fedora")
           yum: name=yum-utils state=present
 
-
+        - name: install packages
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "Fedora")
+          yum: name=['nginx', 'php', 'php-mysql', 'php-fpm', 'php-cli', 'php-gd', 'php-json', 'php-mbstring', 'php-readline', 'php-xml', 'php-zip', 'python-pip', 'mysql-server', 'mariadb-client', 'libmariadbclient-dev', 'python-mariadb', 'libselinux-python'] state=present
 
 
         - name: install packages
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
-          apt: name= ['nginx', 'php7.3', 'php7.3-mysql', 'php7.3-fpm', 'php7.3-cli', 'php7.3-gd', 'php7.3-json', 'php7.3-mbstring', 'php7.3-readline', 'php7.3-xml', 'php7.3-zip', 'python-pip', 'mysql-server', 'mysql-client', 'libmysqlclient-dev', 'python-mysqldb']
+          apt: name=['nginx', 'php7.3', 'php7.3-mysql', 'php7.3-fpm', 'php7.3-cli', 'php7.3-gd', 'php7.3-json', 'php7.3-mbstring', 'php7.3-readline', 'php7.3-xml', 'php7.3-zip', 'python-pip', 'mysql-server', 'mysql-client', 'libmysqlclient-dev', 'python-mysqldb']
               state=present
 
         - name: install memcached

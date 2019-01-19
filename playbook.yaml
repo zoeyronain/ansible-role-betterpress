@@ -88,70 +88,42 @@
             name: http://rpms.remirepo.net/enterprise/remi-release-7.rpm
             state: present
 
+
         - name: update system
           apt: upgrade=dist
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
 
         - name: upgrade all packages
           yum: name=* state=latest
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "Fedora")
 
         - name: install packages
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
-          yum: name='{{ item }}' state=present
-          with_items:
-              - yum-utils
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "Fedora")
+          yum: name=yum-utils state=present
 
-        - name: install packages
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
-          yum: name='{{ item }}' state=present
-          with_items:
-              - nginx
-              - php73
-              - php-mysqlnd
-              - php-fpm
-              - php-cli
-              - php-gd
-              - php-json
-              - php-mbstring
-              - php-mcrypt
-              - php-readline
-              - php-xml
-              - php-zip
-              - python-pip
-              - mariadb-server
-              - mariadb
-              - MySQL-python
+
+
 
         - name: install packages
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
-          apt: name='{{ item }}' state=present
-          with_items:
-            - nginx
-            - php7.3
-            - php7.3-mysql
-            - php7.3-fpm
-            - php7.3-cli
-            - php7.3-gd
-            - php7.3-json
-            - php7.3-mbstring
-            - php7.3-readline
-            - php7.3-xml
-            - php7.3-zip
-            - python-pip
-            - mysql-server
-            - mysql-client
-            - libmysqlclient-dev
-            - python-mysqldb
+          apt: name= ['nginx', 'php7.3', 'php7.3-mysql', 'php7.3-fpm', 'php7.3-cli', 'php7.3-gd', 'php7.3-json', 'php7.3-mbstring', 'php7.3-readline', 'php7.3-xml', 'php7.3-zip', 'python-pip', 'mysql-server', 'mysql-client', 'libmysqlclient-dev', 'python-mysqldb']
+              state=present
 
         - name: install memcached
-          when: (caching is defined)
+          when: (caching is defined and ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           apt: name=memcached state=present
 
-          
+        - name: install memcached
+          when: (caching is defined and ansible_distribution == "Fedora" or ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          yum: name=memcached state=present
+
         - name: install Certbot
-          when: (leEmail is defined)
+          when: (leEmail is defined and ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           apt: name=certbot state=present
+        - name: install Certbot
+          when: (caching is defined and ansible_distribution == "Fedora" or ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          yum: name=certbot state=present
+
 
         - name: stop nginx
           service:
@@ -159,7 +131,7 @@
               state: stopped
 
         - name: start services
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
           service:
               name: mariadb
               state: started
@@ -191,7 +163,7 @@
             group: www-data
 
         - name: create www folder
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
           file:
             path: "/var/www/{{fullDomain}}"
             state: directory
@@ -261,6 +233,12 @@
           template:
               src: configs/nginxconfigHTTPS.conf.j2
               dest: "/etc/nginx/conf.d/{{fullDomain}}.conf"
+
+          when: (leEmail is defined)
+        - name: Install nginx config for HTTPS site
+          template:
+              src: configs/nginxconfigHTTPS.conf.j2
+              dest: "/etc/nginx/conf.d/{{fullDomain}}.conf"
           when: (leEmail is defined)
 
         - name: Install nginx config for HTTP site
@@ -280,7 +258,8 @@
             dest: "/var/www/{{fullDomain}}/wp-config.php"
 
         - name: install basic plugins
-          unarchive: 
+          when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+          unarchive:
             src: '{{ item }}'
             dest: "/var/www/{{fullDomain}}/wp-content/plugins"
             remote_src: yes
@@ -294,6 +273,23 @@
             - https://downloads.wordpress.org/plugin/w3-total-cache.zip
             - https://downloads.wordpress.org/plugin/jetpack.zip
             - https://downloads.wordpress.org/plugin/vaultpress.zip
+
+        - name: install basic plugins
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
+          unarchive:
+            src: '{{ item }}'
+            dest: "/var/www/{{fullDomain}}/wp-content/plugins"
+            remote_src: yes
+            owner: apache
+            group: apache
+          with_items:
+             - https://downloads.wordpress.org/plugin/gutenberg.zip
+             - https://downloads.wordpress.org/plugin/akismet.zip
+             - https://downloads.wordpress.org/plugin/wordfence.zip
+             - https://downloads.wordpress.org/plugin/wordpress-seo.zip
+             - https://downloads.wordpress.org/plugin/w3-total-cache.zip
+             - https://downloads.wordpress.org/plugin/jetpack.zip
+             - https://downloads.wordpress.org/plugin/vaultpress.zip
 
         - name: fix permissions the lazy way
           shell:
@@ -309,34 +305,15 @@
           when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
           file:
             path: "/var/www/{{fullDomain}}"
-            owner: www-data
-            group: www-data
-            recurse: yes
-
-        - name: change folder permissions
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
-          file:
-            path: "/var/www/{{fullDomain}}"
-            owner: apache
-            group: apache
-            recurse: yes
-
-        - name: Open https on the firewall
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
-          firewalld:
-            service: https
-            permanent: true
-            state: enabled
-
         - name: Open http on the firewall
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
           firewalld:
             service: http
             permanent: true
             state: enabled
 
         - name: restart firewalld
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
           service:
               name: firewalld
               state: restarted
@@ -374,7 +351,7 @@
             state: started
 
         - name: start services
-          when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+          when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or  ansible_distribution == "Red Hat Enterprise Linux")
           service:
             name: php-fpm
             state: started
@@ -396,8 +373,3 @@
         - name: restart NGINX for new config to take effect
           service:
             name: nginx
-            state: restarted
-
-
-       
-      

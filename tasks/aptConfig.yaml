@@ -1,0 +1,22 @@
+---
+  tasks:
+    - name: check if ondrej PPA exists
+      stat:
+        path: /etc/apt/sources.list.d/ppa_ondrej_php_cosmic.list
+      register: PPAExists
+
+    - name: allow installation of PHP 7.3 on ubuntu 18.04
+      apt_repository:
+        repo: 'ppa:ondrej/php'
+        state: present
+      when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and PPAExists.stat.exists == False)
+
+    - name: update cache
+      when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+      apt: update_cache=yes
+
+    - name: update system
+      when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+      apt: upgrade=dist
+
+  

@@ -1,0 +1,36 @@
+---
+  tasks:
+
+    - name: ensure variables exist
+      stat:
+        path: ../variables.yaml
+      register: var
+      failed_when: var.stat.exists == False
+
+    - name: include variables of variables.yaml
+      include_vars:
+        file: variables.yaml
+
+    - name: ensure nginx.conf exists
+      stat:
+        path: ../templates/nginx.conf
+      register: nginx
+      failed_when: nginx.stat.exists == False
+
+    - name: ensure nginxconfigHTTPS.conf.j2 exists
+      stat:
+        path: ../templates/nginxconfigHTTPS.conf.j2
+      register: nginxHTTPS
+      failed_when: nginxHTTPS.stat.exists == False
+
+    - name: ensure nginxconfigHTTP.conf.j2 exists
+      stat:
+        path: ../templtes/nginxconfigHTTP.conf.j2
+      register: nginxHTTP
+      failed_when: nginxHTTP.stat.exists == False
+
+    - name: ensure wordpress's config exists
+      stat:
+        path: ../templates/wp-config-sample.php.j2
+      register: wpconfig
+      failed_when: wpconfig.stat.exists == False

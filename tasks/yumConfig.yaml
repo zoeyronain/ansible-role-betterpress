@@ -1,0 +1,23 @@
+---
+  tasks:
+    - name: install EPEL
+      when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
+      yum:
+        name: epel-release
+        state: present
+
+    - name: install remi repo
+      when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
+      yum:
+        name: http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+        state: present
+
+    - name: install yum-utils
+      when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
+      yum:
+        name: yum-utils
+        state: present
+
+    - name: update system
+      when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
+      yum: name=* state=latest

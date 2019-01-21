@@ -1,4 +1,9 @@
 ---
+  - name: make nginx.conf.d folder
+    file:
+      path: "/etc/nginx/nginx.conf.d"
+      state: directory
+      
 
   - name: create www folder
     when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")

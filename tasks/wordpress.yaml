@@ -5,6 +5,8 @@
       dest: "/var/www/{{fullDomain}}"
       remote_src: yes
       extra_opts: [--strip-components=1]
+      owner: www-data
+      group: www-data
 
   - name: fetch random salts for Wordpress config
     local_action: command curl https://api.wordpress.org/secret-key/1.1/salt

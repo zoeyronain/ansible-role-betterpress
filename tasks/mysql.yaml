@@ -16,6 +16,7 @@
   - name: Create a new user
     mysql_user:
       name: "{{domainShort}}"
+      password: "{{db_password}}"
       login_user: "{{mysqluser}}"
       login_password: "{{mysqlpassword}}"
       priv: '"{{domainShort}}".*:All'

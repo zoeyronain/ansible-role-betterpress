@@ -1,3 +1,5 @@
+---
+# vars file for role-betterpress
 domainShort: '(Domain without the suffex (ie .com))'
 fullDomain: '(Domain with the suffex)'
 leEmail: '(Email for LetsEncrypt renewal Notices (you shouldn't get one if all goes well, but its a good way to know if something gets screwed up before your site goes offline))'

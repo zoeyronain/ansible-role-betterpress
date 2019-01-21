@@ -20,6 +20,7 @@
       - mysql-client
       - libmysqlclient-dev
       - python-mysqldb
+      - unzip
 
   - name: install caching
     when: (caching == True and ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")

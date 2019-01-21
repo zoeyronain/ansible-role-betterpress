@@ -1,36 +1,36 @@
 ---
-  tasks:
-    - name: install packages
-      when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
-      yum: name='{{ item }}' state=present
-      with_items:
-        - nginx
-        - php73
-        - php-mysqlnd
-        - php-fpm
-        - php-cli
-        - php-gd
-        - php-json
-        - php-mbstring
-        - php-mcrypt
-        - php-readline
-        - php-xml
-        - php-zip
-        - python-pip
-        - mariadb-server
-        - mariadb
-        - MySQL-python
-        - libselinux-python
+
+  - name: install packages
+    when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
+    yum: name='{{ item }}' state=present
+    with_items:
+      - nginx
+      - php
+      - php-mysqlnd
+      - php-fpm
+      - php-cli
+      - php-gd
+      - php-json
+      - php-mbstring
+      - php-mcrypt
+      - php-readline
+      - php-xml
+      - php-zip
+      - python-pip
+      - mariadb-server
+      - mariadb
+      - MySQL-python
+      - libselinux-python
 
 
-    - name: install caching
-      when: (caching == True and ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "CentOS")
-      yum:
-        name: memcached
-        state: present
+  - name: install caching
+    when: (caching == True and ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "CentOS")
+    yum:
+      name: memcached
+      state: present
 
-    - name: install certbot
-      when: (leEmail is defined and ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "CentOS")
-      yum:
-        name: certbot
-        state: present
+  - name: install certbot
+    when: (leEmail is defined and ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "CentOS")
+    yum:
+      name: certbot
+      state: present

@@ -1,20 +1,20 @@
 ---
-  tasks:
-    - name: generate production letsencrypt certificate
-      shell: certbot certonly --agree-tos -a standalone -m {{leEmail}} -d {{fullDomain}} -d www.{{fullDomain}}
-      args:
-        creates: /etc/letsencrypt/live/{{fullDomain}}
-      when: (letsEncrypt == "Production" and leEmail is defined and cfapi is defined)
 
-    - name: generate staging letsencrypt certificate
-      shell: certbot certonly --agree-tos -a standalone --staging -m {{leEmail}} -d {{fullDomain}} -d www.{{fullDomain}}
-      args:
-        creates: /etc/letsencrypt/live/{{fullDomain}}
-      when: (letsEncrypt == "Testing" and leEmail is defined and cfapi is defined)
+  - name: generate production letsencrypt certificate
+    shell: certbot certonly --agree-tos -a standalone -m {{leEmail}} -d {{fullDomain}} -d www.{{fullDomain}}
+    args:
+      creates: /etc/letsencrypt/live/{{fullDomain}}
+    when: (letsEncrypt == "Production" and leEmail is defined and cfapi is defined)
 
-    - name: add LetsEncrypt cronjob for renewal
-      cron:
-        name: letsencrypt_renewal
-        special_time: weekly
-        job: service nginx stop && certbot renew && service nginx start
-      when: (lsEmail is defined)
+  - name: generate staging letsencrypt certificate
+    shell: certbot certonly --agree-tos -a standalone --staging -m {{leEmail}} -d {{fullDomain}} -d www.{{fullDomain}}
+    args:
+      creates: /etc/letsencrypt/live/{{fullDomain}}
+    when: (letsEncrypt == "Testing" and leEmail is defined and cfapi is defined)
+
+  - name: add LetsEncrypt cronjob for renewal
+    cron:
+      name: letsencrypt_renewal
+      special_time: weekly
+      job: service nginx stop && certbot renew && service nginx start
+    when: (lsEmail is defined)

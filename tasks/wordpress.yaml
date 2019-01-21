@@ -1,62 +1,57 @@
 ---
-  tasks:
+  - name: extract Wordpress
+    unarchive:
+      src: https://wordpress.org/latest.tar.gz
+      dest: "/var/www/{{fullDomain}}"
+      remote_src: yes
+      extra_opts: [--strip-components=1]
 
-    - name: extract Wordpress
-      unarchive:
-        src: https://wordpress.org/latest.tar.gz
-        dest: "/var/www/{{fullDomain}}"
-        remote_src: yes
-        extra_opts: [--strip-components=1]
+  - name: fetch random salts for Wordpress config
+    local_action: command curl https://api.wordpress.org/secret-key/1.1/salt
+    register: "wp_salt"
 
-    - name: fetch random salts for Wordpress config
-      local_action: command curl https://api.wordpress.org/secret-key/1.1/salt
-      register: "wp_salt"
+  - name: install Wordpress config
+    template:
+      src: ../configs/wp-config-sample.php.j2
+      dest: "/var/www/{{fullDomain}}/wp-config.php"
 
-    - name: install Wordpress config
-      template:
-        src: ../configs/wp-config-sample.php.j2
-        dest: "/var/www/{{fullDomain}}/wp-config.php"
+  - name: install basic plugins
+    when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+    unarchive:
+      src: "{{item}}"
+      dest: "/var/www/{{fullDomain}}/wp-content/plugins"
+      remote_src: yes
+      owner: www-data
+      group: www-data
+    with_items:
+      - https://downloads.wordpress.org/plugin/gutenberg.zip
+      - https://downloads.wordpress.org/plugin/akismet.zip
+      - https://downloads.wordpress.org/plugin/wordfence.zip
+      - https://downloads.wordpress.org/plugin/wordpress-seo.zip
+      - https://downloads.wordpress.org/plugin/jetpack.zip
+      - https://downloads.wordpress.org/plugin/vaultpress.zip
 
-    - name: install basic plugins
-      when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
-      unarchive:
-        src: "{{item}}"
-        dest: "/var/www/{{fullDomain}}/wp-content/plugins"
-        remote_src: yes
-        owner: www-data
-        group: www-data
-      with_items:
-        - https://downloads.wordpress.org/plugin/gutenberg.zip
-        - https://downloads.wordpress.org/plugin/akismet.zip
-        - https://downloads.wordpress.org/plugin/wordfence.zip
-        - https://downloads.wordpress.org/plugin/wordpress-seo.zip
-        - https://downloads.wordpress.org/plugin/w3-total-cache.zip
-        - https://downloads.wordpress.org/plugin/jetpack.zip
-        - https://downloads.wordpress.org/plugin/vaultpress.zip
+  - name: install basic plugins
+    when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
+    unarchive:
+      src: "{{item}}"
+      dest: "/var/www/{{fullDomain}}/wp-content/plugins"
+      remote_src: yes
+      owner: www-data
+      group: www-data
+    with_items:
+      - https://downloads.wordpress.org/plugin/gutenberg.zip
+      - https://downloads.wordpress.org/plugin/akismet.zip
+      - https://downloads.wordpress.org/plugin/wordfence.zip
+      - https://downloads.wordpress.org/plugin/jetpack.zip
+      - https://downloads.wordpress.org/plugin/vaultpress.zip
 
-    - name: install basic plugins
-      when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
-      unarchive:
-        src: "{{item}}"
-        dest: "/var/www/{{fullDomain}}/wp-content/plugins"
-        remote_src: yes
-        owner: www-data
-        group: www-data
-      with_items:
-        - https://downloads.wordpress.org/plugin/gutenberg.zip
-        - https://downloads.wordpress.org/plugin/akismet.zip
-        - https://downloads.wordpress.org/plugin/wordfence.zip
-        - https://downloads.wordpress.org/plugin/wordpress-seo.zip
-        - https://downloads.wordpress.org/plugin/w3-total-cache.zip
-        - https://downloads.wordpress.org/plugin/jetpack.zip
-        - https://downloads.wordpress.org/plugin/vaultpress.zip
+  - name: fix file permissions
+    shell:
+      chdir: "/var/www/{{fullDomain}}"
+      cmd: find . -type f -exec chmod 664 {} +
 
-    - name: fix file permissions
-      shell:
-        chdir: "/var/www/{{fullDomain}}"
-        cmd: find . -type f -exec chmod 664 {} +
-
-    - name: fix folder permissions
-      shell:
-        chdir: "/var/www/{{fullDomain}}"
-        cmd: find . -type d -exec chmod 775 {} +
+  - name: fix folder permissions
+    shell:
+      chdir: "/var/www/{{fullDomain}}"
+      cmd: find . -type d -exec chmod 775 {} +

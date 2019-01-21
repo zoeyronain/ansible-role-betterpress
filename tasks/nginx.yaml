@@ -21,16 +21,16 @@
   - name: install NGINX config for HTTP only site
     when: (leEmail is not defined)
     template:
-      src: ../configs/nginxHTTPconfig.conf.j2
+      src: nginxHTTPconfig.conf.j2
       dest: "/etc/nginx.conf.d/{{fullDomain}}.conf"
 
   - name: install NGINX config for HTTPS site
     when: (leEmail is defined)
     template:
-      src: ../configs/nginxHTTPSconfig.conf.j2
+      src: nginxHTTPSconfig.conf.j2
       dest: "/etc/nginx.conf.d/{{fullDomain}}.conf"
 
   - name: install NGINX config
     copy:
-      src: ../configs/nginx.conf
+      src: nginx.conf
       dest: "/etc/nginx/nginx.conf"

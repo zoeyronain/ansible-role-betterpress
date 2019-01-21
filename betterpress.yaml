@@ -1,5 +1,15 @@
 ---
     - hosts: localhost
       connection: local
+
+      vars:
+        db_password: "{{ lookup('password', './passwordfile chars=ascii_letters,digits,hexdigits,punctuation') }}"
+
+
+      vars_prompt:
+        - name: "mysqlpassword"
+          prompt: "What is the password for your mysql user?"
+          private: no
+
       roles:
-        - role: ./tasks/*.yaml
+        - role: betterpress

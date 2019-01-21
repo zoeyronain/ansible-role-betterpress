@@ -1,7 +1,7 @@
 ---
   - name: make nginx.conf.d folder
     file:
-      path: "/etc/nginx/nginx.conf.d"
+      path: "/etc/nginx/conf.d"
       state: directory
 
 
@@ -27,13 +27,13 @@
     when: (leEmail is not defined)
     template:
       src: nginxHTTPconfig.conf.j2
-      dest: "/etc/nginx/nginx.conf.d/{{fullDomain}}.conf"
+      dest: "/etc/nginx/conf.d/{{fullDomain}}.conf"
 
   - name: install NGINX config for HTTPS site
     when: (leEmail is defined)
     template:
-      src: nginxHTTPSconfig.conf.j2
-      dest: "/etc/nginx/nginx.conf.d/{{fullDomain}}.conf"
+      src: nginxHTTPSconfig.conf.qj2
+      dest: "/etc/nginx/conf.d/{{fullDomain}}.conf"
 
   - name: install NGINX config
     copy:

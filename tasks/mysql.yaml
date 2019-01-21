@@ -19,5 +19,5 @@
       password: "{{db_password}}"
       login_user: "{{mysqluser}}"
       login_password: "{{mysqlpassword}}"
-      priv: '"{{domainShort}}".*:All'
+      priv: '*.*:All'
       state: present

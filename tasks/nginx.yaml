@@ -3,7 +3,7 @@
     file:
       path: "/etc/nginx/nginx.conf.d"
       state: directory
-      
+
 
   - name: create www folder
     when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
@@ -27,13 +27,13 @@
     when: (leEmail is not defined)
     template:
       src: nginxHTTPconfig.conf.j2
-      dest: "/etc/nginx.conf.d/{{fullDomain}}.conf"
+      dest: "/etc/nginx/nginx.conf.d/{{fullDomain}}.conf"
 
   - name: install NGINX config for HTTPS site
     when: (leEmail is defined)
     template:
       src: nginxHTTPSconfig.conf.j2
-      dest: "/etc/nginx.conf.d/{{fullDomain}}.conf"
+      dest: "/etc/nginx/nginx.conf.d/{{fullDomain}}.conf"
 
   - name: install NGINX config
     copy:

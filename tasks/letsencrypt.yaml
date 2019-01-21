@@ -1,4 +1,8 @@
 ---
+  - name: stop NGINX
+    service:
+      name: nginx
+      state: stopped
 
   - name: generate production letsencrypt certificate
     shell: certbot certonly --agree-tos -a standalone -m {{leEmail}} -d {{fullDomain}} -d www.{{fullDomain}}

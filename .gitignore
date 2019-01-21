@@ -1,5 +1,5 @@
 passwordfile
 playbook.retry
-variables.yaml
+all.yml
 .DS_Store
-test
+variables.yaml

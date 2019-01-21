@@ -1,6 +1,6 @@
 ---
 # tasks file for role-betterpress
-  - import_tasks: prerun.yaml
+  # - import_tasks: prerun.yaml
   - import_tasks: aptConfig.yaml
   - import_tasks: aptInstall.yaml
   - import_tasks: yumConfig.yaml

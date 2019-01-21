@@ -1,4 +1,19 @@
 ---
+  - name: ensure ssl dhparam exists
+    stat:
+      path: /etc/nginx/ssl/dhparam.pem
+    register: missingdhparam
+
+  - name: ensure ssl folder exists
+    file:
+      path: /etc/nginx/ssl/
+      state: directory
+    when: missingdhparam.stat.exists == False
+
+  - name: generate dhprams
+    command: openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
+    when: missingdhparam.stat.exists == False
+
   - name: make nginx.conf.d folder
     file:
       path: "/etc/nginx/conf.d"

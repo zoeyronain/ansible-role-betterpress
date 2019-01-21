@@ -32,7 +32,7 @@
   - name: install NGINX config for HTTPS site
     when: (leEmail is defined)
     template:
-      src: nginxHTTPSconfig.conf.qj2
+      src: nginxHTTPSconfig.conf.j2
       dest: "/etc/nginx/conf.d/{{fullDomain}}.conf"
 
   - name: install NGINX config

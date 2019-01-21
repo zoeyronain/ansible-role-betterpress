@@ -1,7 +1,7 @@
 ---
   tasks:
     - name: install packages
-      when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux")
+      when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
       yum: name='{{ item }}' state=present
       with_items:
         - nginx
@@ -21,3 +21,16 @@
         - mariadb
         - MySQL-python
         - libselinux-python
+
+
+    - name: install caching
+      when: (caching == True and ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "CentOS")
+      yum:
+        name: memcached
+        state: present
+
+    - name: install certbot
+      when: (leEmail is defined and ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "CentOS")
+      yum:
+        name: certbot
+        state: present

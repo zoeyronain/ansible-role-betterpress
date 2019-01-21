@@ -1,0 +1,21 @@
+---
+  tasks:
+    - name: start Mariadb
+      service: mariadb
+      state: enabled
+      when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
+
+    - name: Create a new database
+      mysql_db:
+        name: "{{domainShort}}"
+        login_user: "{{mysqluser}}"
+        login_password: "{{mysqlpassword}}"
+        state: present
+
+    - name: Create a new user
+      mysql_user:
+        name: "{{domainShort}}"
+        login_user: "{{mysqluser}}"
+        login_password: "{{mysqlpassword}}"
+        priv: '"{{domainShort}}".*:All'
+        state: present

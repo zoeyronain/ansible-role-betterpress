@@ -1,0 +1,42 @@
+---
+  tasks:
+
+    - name: ipv4 www DNS
+      cloudflare_dns:
+        zone: {{fullDomain}}
+        record: www
+        type: A
+        value: "{{ipv4}}"
+        account_email: "{{cfemail}}"
+        account_api_token: "{{cfapi}}"
+      when: (cfapi is defined)
+
+    - name: ipv4 DNS
+      cloudflare_dns:
+        zone: {{fullDomain}}
+        record: "@"
+        type: A
+        value: "{{ipv4}}"
+        account_email: "{{cfemail}}"
+        account_api_token: "{{cfapi}}"
+      when: (cfapi is defined)
+
+    - name: ipv6 DNS
+      cloudflare_dns:
+        zone: {{fullDomain}}
+        record: "@"
+        type: AAAA
+        value: "{{ipv6}}"
+        account_email: "{{cfemail}}"
+        account_api_token: "{{cfapi}}"
+      when: (cfapi is defined and ipv6 is defined)
+
+    - name: ipv6 www DNS
+      cloudflare_dns:
+        zone: {{fullDomain}}
+        record: "www"
+        type: AAAA
+        value: "{{ipv6}}"
+        account_email: "{{cfemail}}"
+        account_api_token: "{{cfapi}}"
+      when: (cfapi is defined and ipv6 is defined)

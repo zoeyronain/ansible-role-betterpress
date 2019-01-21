@@ -8,3 +8,4 @@ ipv6: '(Server IPV6 Address)'
 LetsEncrypt: 'Production'  # Production: use for live sites, Testing: use for testing things out (but will cause Certificate errors in your browser) - Case sensitive
 mysqluser: "(MySql User to use to create the database)"
 mysqlHost: "127.0.0.1 (MySQL DB IP address - should be 127.0.0.1  "
+caching: True

@@ -1,0 +1,17 @@
+---
+  tasks:
+    - name: start NGINX
+      service:
+        name: nginx
+        state: enabled
+
+    - name: start PHP for Debian based OS
+      when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+      service:
+        name: php7.3-fpm
+        state: enabled
+    - name: start PHP for CentOS based OS
+      when: (ansible_distribution == "Centos" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
+      service:
+        name: php-fpm
+        state: enabled

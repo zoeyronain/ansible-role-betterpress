@@ -3,7 +3,7 @@
 
     - name: ensure variables exist
       stat:
-        path: ../variables.yaml
+        path: ../vars/variables.yaml
       register: var
       failed_when: var.stat.exists == False
 

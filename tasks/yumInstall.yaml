@@ -21,13 +21,14 @@
       - mariadb
       - MySQL-python
       - libselinux-python
+      - memcached
     register: task_result
     until: task_result is success
     retries: 10
     delay: 2
 
   - name: install caching
-    when: (ansible_distribution == "Fedora" or ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    when: (caching == True ansible_distribution == "Fedora" or ansible_distribution == "EL" or ansible_distribution == "CentOS")
     yum:
       name: memcached
       state: present

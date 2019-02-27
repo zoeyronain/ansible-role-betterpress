@@ -21,7 +21,17 @@
       - libmysqlclient-dev
       - python-mysqldb
       - unzip
-      - memcached
+      
+    register: task_result
+    until: task_result is success
+    retries: 10
+    delay: 2
+
+  - name: install caching
+    when: (caching == True and ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+    apt:
+      name: memcached
+      state: present
     register: task_result
     until: task_result is success
     retries: 10

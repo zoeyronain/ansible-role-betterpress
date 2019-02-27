@@ -1,0 +1,19 @@
+with_items:
+  - nginx
+  - php
+  - php-mysqlnd
+  - php-fpm
+  - php-cli
+  - php-gd
+  - php-json
+  - php-mbstring
+  - php-mcrypt
+  - php-readline
+  - php-xml
+  - php-zip
+  - python-pip
+  - mariadb-server
+  - mariadb
+  - MySQL-python
+  - libselinux-python
+  - unzip

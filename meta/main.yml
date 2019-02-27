@@ -46,14 +46,14 @@ galaxy_info:
 
   - name: Red Hat Enterprise Linux
     versions:
-      - all
+     - all
 
   - name: CentOS
     versions:
-      - all
+     - all
   - name: Debian
     versions:
-      - all
+     - all
 
   galaxy_tags: []
     # List tags for your role here, one per line. A tag is a keyword that describes

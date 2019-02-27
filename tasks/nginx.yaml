@@ -41,6 +41,11 @@
       owner: www-data
       group: www-data
 
+  - name: copy php config for php-fpm
+    when: (ansible_distribution == "EL" or ansible_distribution == "Fedora" or ansible_distribution == "CentOS")
+    copy:
+      src: www.conf
+      dest: "/etc/php-fpm.d/www.conf"
 
   - name: install NGINX config for HTTP only site
     when: (leEmail is not defined)

@@ -37,3 +37,7 @@
     until: task_result is success
     retries: 10
     delay: 2
+
+  - name: enable remi-php73
+    when: (ansible_distribution == "EL" or ansible_distribution == "Fedora" or ansible_distribution == "CentOS")
+    shell: yum-config-manager --enable remi-php73

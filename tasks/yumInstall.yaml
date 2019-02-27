@@ -29,7 +29,7 @@
     delay: 2
 
   - name: install caching
-    when: (caching == True or ansible_distribution == "Fedora" or ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    when: (caching == True and ansible_distribution == "Fedora" or ansible_distribution == "EL" or ansible_distribution == "CentOS")
     yum:
       name: memcached
       state: present

@@ -23,7 +23,7 @@
   - name: create www folder
     when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
     file:
-      path: "/var/www/{{fullDomain}}"
+      path: "/var/www/{{ fullDomain }}"
       state: directory
       mode: 0755
       owner: www-data
@@ -32,7 +32,7 @@
   - name: Create www folder
     when: (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "Fedora")
     file:
-      path: "/var/www/{{fulLDomain}}"
+      path: "/var/www/{{ fulLDomain }}"
       state: directory
       mode: 0755
       owner: apache
@@ -42,13 +42,13 @@
     when: (leEmail is not defined)
     template:
       src: nginxHTTPconfig.conf.j2
-      dest: "/etc/nginx/conf.d/{{fullDomain}}.conf"
+      dest: "/etc/nginx/conf.d/{{ fullDomain }}.conf"
 
   - name: install NGINX config for HTTPS site
     when: (leEmail is defined)
     template:
       src: nginxHTTPSconfig.conf.j2
-      dest: "/etc/nginx/conf.d/{{fullDomain}}.conf"
+      dest: "/etc/nginx/conf.d/{{ fullDomain }}.conf"
 
   - name: install NGINX config
     copy:

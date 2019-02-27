@@ -5,15 +5,15 @@
       state: stopped
 
   - name: generate production letsencrypt certificate
-    shell: certbot certonly --agree-tos -a standalone -m {{leEmail}} -d {{fullDomain}} -d www.{{fullDomain}}
+    shell: certbot certonly --agree-tos -a standalone -m {{ leEmail }} -d {{ fullDomain }} -d www.{{ fullDomain }}
     args:
-      creates: /etc/letsencrypt/live/{{fullDomain}}
+      creates: /etc/letsencrypt/live/{{ fullDomain }}
     when: (LetsEncrypt == "Production" and leEmail is defined and cfapi is defined)
 
   - name: generate staging letsencrypt certificate
-    shell: certbot certonly --agree-tos -a standalone --staging -m {{leEmail}} -d {{fullDomain}} -d www.{{fullDomain}}
+    shell: certbot certonly --agree-tos -a standalone --staging -m {{ leEmail }} -d {{ fullDomain }} -d www.{{ fullDomain }}
     args:
-      creates: /etc/letsencrypt/live/{{fullDomain}}
+      creates: /etc/letsencrypt/live/{{ fullDomain }}
     when: (LetsEncrypt == "Testing" and leEmail is defined and cfapi is defined)
 
   - name: add LetsEncrypt cronjob for renewal

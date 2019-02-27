@@ -8,16 +8,16 @@
 
   - name: Create a new database
     mysql_db:
-      name: "{{domainShort}}"
-      login_user: "{{mysqluser}}"
-      login_password: "{{mysqlpassword}}"
+      name: "{{ domainShort }}"
+      login_user: "{{ mysqluser }}"
+      login_password: "{{ mysqlpassword }}"
       state: present
 
   - name: Create a new user
     mysql_user:
-      name: "{{domainShort}}"
-      password: "{{db_password}}"
-      login_user: "{{mysqluser}}"
-      login_password: "{{mysqlpassword}}"
+      name: "{{ domainShort }}"
+      password: "{{ db_password }}"
+      login_user: "{{ mysqluser }}"
+      login_password: "{{ mysqlpassword }}"
       priv: '*.*:All'
       state: present

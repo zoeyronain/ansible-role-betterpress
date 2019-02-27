@@ -2,8 +2,28 @@
 
   - name: install packages
     when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "EL")
-    yum: name: ['nginx', 'php', 'php-mysqlnd', 'php-fpm', 'php-cli', 'php-gd', 'php-json', 'php-mbstring', 'php-mcrypt', 'php-readline', 'php-xml', 'php-zip', 'python-pip', 'mariadb-server', 'mariadb', 'MySQL-python', 'libselinux-python', 'unzip']`
-  
+    yum:
+      name:
+        - 'nginx'
+        - 'php'
+        - 'php-mysqlnd'
+        - 'php-fpm'
+        - 'php-cli'
+        - 'php-gd'
+        - 'php-json'
+        - 'php-mbstring'
+        - 'php-mcrypt'
+        - 'php-readline'
+        - 'php-xml'
+        - 'php-zip'
+        - 'python-pip'
+        - 'mariadb-server'
+        - 'mariadb'
+        - 'MySQL-python'
+        - 'libselinux-python'
+        - 'unzip'
+      state: present
+
 
     register: task_result
     until: task_result is success

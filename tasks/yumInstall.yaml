@@ -1,7 +1,7 @@
 ---
 
   - name: install packages
-    when: (ansible_distribution == "EL" or ansible_distribution == "Fedora" or ansible_distribution="CentOS")
+    when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
     yum: name='{{ item }}' state=present
     with_items:
       - nginx
@@ -27,7 +27,7 @@
     delay: 2
 
   - name: install caching
-    when: (ansible_distribution == "Fedora" or ansible_distribution == "EL")
+    when: (caching == True and ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "CentOS")
     yum:
       name: memcached
       state: present
@@ -35,9 +35,8 @@
     until: task_result is success
     retries: 10
     delay: 2
-
   - name: install certbot
-    when: (leEmail is defined and ansible_distribution == "Fedora"  or ansible_distribution == "EL")
+    when: (leEmail is defined and ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "CentOS")
     yum:
       name: certbot
       state: present

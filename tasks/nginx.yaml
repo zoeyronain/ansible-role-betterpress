@@ -33,6 +33,12 @@
       comment: nginx
       group: www-data
 
+  - name: Create /run/php folder
+    when: (ansible_distribution == "EL" or ansible_distribution == "Fedora" or ansible_distribution == "CentOS")
+    file:
+      path: "/run/php"
+      state: directory
+      
   - name: create www folder
     file:
       path: "/var/www/{{ fullDomain }}"

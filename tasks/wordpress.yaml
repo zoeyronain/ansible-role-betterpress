@@ -18,7 +18,6 @@
       dest: "/var/www/{{ fullDomain }}/wp-config.php"
 
   - name: install basic plugins
-    when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
     unarchive:
       src: "{{ item }}"
       dest: "/var/www/{{ fullDomain }}/wp-content/plugins"
@@ -33,20 +32,6 @@
       - https://downloads.wordpress.org/plugin/jetpack.zip
       - https://downloads.wordpress.org/plugin/vaultpress.zip
 
-  - name: install basic plugins
-    when: (ansible_distribution == "EL" or ansible_distribution == "Fedora")
-    unarchive:
-      src: "{{ item }}"
-      dest: "/var/www/{{ fullDomain }}/wp-content/plugins"
-      remote_src: yes
-      owner: www-data
-      group: www-data
-    with_items:
-      - https://downloads.wordpress.org/plugin/gutenberg.zip
-      - https://downloads.wordpress.org/plugin/akismet.zip
-      - https://downloads.wordpress.org/plugin/wordfence.zip
-      - https://downloads.wordpress.org/plugin/jetpack.zip
-      - https://downloads.wordpress.org/plugin/vaultpress.zip
 
   - name: fix file permissions
     shell:

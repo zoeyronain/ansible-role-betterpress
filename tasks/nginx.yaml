@@ -54,3 +54,10 @@
     copy:
       src: nginx.conf
       dest: "/etc/nginx/nginx.conf"
+
+  - name: create user and group for nginx on CentOS based OS
+    when: (ansible_distribution == "EL" or ansible_distribution == "Fedora" or ansible_distribution == "CentOS")
+    user:
+      name: www-data
+      comment: nginx
+      group: www-data

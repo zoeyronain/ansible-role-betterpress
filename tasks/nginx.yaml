@@ -44,7 +44,7 @@
   - name: create snippets folder
     when: (ansible_distribution == "EL" or ansible_distribution == "Fedora" or ansible_distribution == "CentOS")
     file:
-      path: "/var/www/snippets"
+      path: "/etc/nginx/snippets"
       state: directory
 
   - name: copy php config for php-fpm

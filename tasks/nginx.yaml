@@ -30,7 +30,7 @@
       group: www-data
 
   - name: Create www folder
-    when: (ansible_distribution == "EL" or ansible_distribution == "Fedora")
+    when: (ansible_distribution == "EL" or ansible_distribution == "Fedora" or ansible_distribution == "CentOS")
     file:
       path: "/var/www/{{ fulLDomain }}"
       state: directory

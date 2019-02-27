@@ -6,6 +6,8 @@
       service: http
       permanent: true
       state: enabled
+      immediate: yes
+
 
   - name: open https on firewall
     when: (ansible_distribution == "EL" or ansible_distribution == "Fedora" or ansible_distribution == "CentOS" and leEmail is defined)
@@ -13,6 +15,7 @@
       service: https
       permanent: true
       state: enabled
+      immediate: yes
 
   - name: open http on firewall
     when: (ansible_distribution == "Ubuntu" or ansible_distribution == "Debian")

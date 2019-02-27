@@ -34,7 +34,7 @@
       - https://downloads.wordpress.org/plugin/vaultpress.zip
 
   - name: install basic plugins
-    when: (ansible_distribution == "CentOS" or ansible_distribution == "Fedora" or ansible_distribution == "Red Hat Enterprise Linux")
+    when: (ansible_distribution == "EL" or ansible_distribution == "Fedora")
     unarchive:
       src: "{{item}}"
       dest: "/var/www/{{ fullDomain }}/wp-content/plugins"

@@ -28,7 +28,7 @@
     delay: 2
 
   - name: install caching
-    when: (caching == True ansible_distribution == "Fedora" or ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    when: (caching == True or ansible_distribution == "Fedora" or ansible_distribution == "EL" or ansible_distribution == "CentOS")
     yum:
       name: memcached
       state: present
@@ -36,7 +36,7 @@
     until: task_result is success
     retries: 10
     delay: 2
-    
+
   - name: install certbot
     when: (leEmail is defined and ansible_distribution == "Fedora" or ansible_distribution == "EL" or ansible_distribution == "CentOS")
     yum:

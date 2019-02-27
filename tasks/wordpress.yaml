@@ -20,7 +20,7 @@
   - name: install basic plugins
     when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
     unarchive:
-      src: "{{item}}"
+      src: "{{ item }}"
       dest: "/var/www/{{ fullDomain }}/wp-content/plugins"
       remote_src: yes
       owner: www-data
@@ -36,7 +36,7 @@
   - name: install basic plugins
     when: (ansible_distribution == "EL" or ansible_distribution == "Fedora")
     unarchive:
-      src: "{{item}}"
+      src: "{{ item }}"
       dest: "/var/www/{{ fullDomain }}/wp-content/plugins"
       remote_src: yes
       owner: www-data

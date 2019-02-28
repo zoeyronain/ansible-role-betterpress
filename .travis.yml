@@ -10,7 +10,7 @@ env:
 
 before_install:
   - 'sudo apt-get update'
-  - 'sudo apt-get dist-upgrade -y'
+  - 'sudo apt-get dist-upgrade -y --allow-unauthenticated'
   - 'sudo apt-get install ansible python-pip -y'
   - 'pip install git+https://github.com/larsks/ansible-toolbox'
 

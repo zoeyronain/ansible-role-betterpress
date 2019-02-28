@@ -1,7 +1,7 @@
 ---
 
   - name: open http on firewall
-    when: (ansible_distribution == "EL" or ansible_distribution == "Fedora" or ansible_distribution == "CentOS")
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
     firewalld:
       service: http
       permanent: true
@@ -10,7 +10,7 @@
 
 
   - name: open https on firewall
-    when: (ansible_distribution == "EL" or ansible_distribution == "Fedora" or ansible_distribution == "CentOS" and leEmail is defined)
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS" and leEmail is defined)
     firewalld:
       service: https
       permanent: true

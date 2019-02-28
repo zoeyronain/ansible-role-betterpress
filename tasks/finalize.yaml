@@ -11,7 +11,7 @@
       state: started
 
   - name: start PHP for CentOS based OS
-    when: (ansible_distribution == "EL" or ansible_distribution == "Fedora" or ansible_distribution == "CentOS")
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
     service:
       name: php-fpm
       state: started

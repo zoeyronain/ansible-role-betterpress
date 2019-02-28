@@ -7,35 +7,24 @@ env:
     run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
 
   - distro: ubuntu1804
-    init: /sbin/init
-    run_opts: ""
+    init: /usr/lib/systemd/systemd
+    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
 
 
 
-services:
-  - docker
-
-before_install:
-  # Pull container.
-  - 'sudo docker pull geerlingguy/docker-${distro}-ansible:latest'
 
 script:
-  - container_id=$(mktemp)
-  # Run container in detached state.
-  - 'sudo docker run --detach --volume="${PWD}":/etc/ansible/roles/zoeycluff.betterpress:ro ${run_opts} geerlingguy/docker-${distro}-ansible "${init}" > "${container_id}"'
 
   # Ansible syntax check.
-  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/zoeycluff.betterpress/tests/test.yml --syntax-check'
+  - 'sudo ansible-playbook /etc/ansible/roles/zoeycluff.betterpress/tests/test.yml --syntax-check'
 
   # Test role.
-  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/zoeycluff.betterpress/tests/test.yml'
+  - 'sudo ansible-playbook /etc/ansible/roles/zoeycluff.betterpress/tests/test.yml'
 
 
-  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm curl 127.0.0.1'
+  - 'sudo curl 127.0.0.1'
 
-after_success:
-  # Clean up.
-  - 'sudo docker stop "$(cat ${container_id})"'
+
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

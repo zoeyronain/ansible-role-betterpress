@@ -1,10 +1,12 @@
 ---
 
   - name: start Mariadb
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
     service:
       name: mariadb
       state: started
-    when: (ansible_distribution == "EL" or ansible_distribution == "Fedora" or ansible_distribution == "CentOS")
+      enabled: yes
+
 
   - name: Create a new database
     mysql_db:

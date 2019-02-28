@@ -1,6 +1,6 @@
 ---
   - name: stop NGINX
-    service:
+    svinit:
       name: nginx
       state: stopped
 

@@ -8,7 +8,7 @@ env:
 
   - distro: ubuntu1804
     init: /sbin/init
-    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    run_opts: ""
 
 
 

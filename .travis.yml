@@ -2,9 +2,7 @@
 sudo: required
 
 env:
-  - distro: centos7
-    init: /usr/lib/systemd/systemd
-    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+
 
   - distro: ubuntu1804
     init: /usr/lib/systemd/systemd
@@ -14,7 +12,7 @@ env:
 
 
 script:
-
+  - 'sudo apt-get install ansible'
   # Ansible syntax check.
   - 'sudo ansible-playbook /etc/ansible/roles/zoeycluff.betterpress/tests/test.yml --syntax-check'
 

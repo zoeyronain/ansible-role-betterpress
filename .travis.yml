@@ -14,10 +14,10 @@ env:
 script:
   - 'sudo apt-get install ansible'
   # Ansible syntax check.
-  - 'sudo ansible-playbook --connection=local -i "localhost" /etc/ansible/roles/zoeycluff.betterpress/tests/test.yml --syntax-check'
+  - 'sudo ansible-playbook -c local -i hosts /etc/ansible/roles/zoeycluff.betterpress/tests/test.yml --syntax-check'
 
   # Test role.
-  - 'sudo ansible-playbook --connection=local -i "localhost"  /etc/ansible/roles/zoeycluff.betterpress/tests/test.yml'
+  - 'sudo ansible-playbook --c local -i hosts  /etc/ansible/roles/zoeycluff.betterpress/tests/test.yml'
 
 
   - 'sudo curl 127.0.0.1'

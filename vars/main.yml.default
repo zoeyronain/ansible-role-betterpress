@@ -10,6 +10,6 @@ ipv6: '(Server IPV6 Address)'
 LetsEncrypt: 'Production'  # Production: use for live sites, Testing: use for testing things out (but will cause Certificate errors in your browser) - Case sensitive
 mysqluser: "root" # Root MySQL user
 mysqlpassword: "" # Should be blank unless you're already running a database
-mysqlHost: "127.0.0.1 (MySQL DB IP address - should be 127.0.0.1  "
-db_password: "changeme" # MySQL password for site password
+mysqlHost: "127.0.0.1" # MySQL DB IP address - should be 127.0.0.1
+db_password: "changeme" # MySQL password for site database
 caching: True

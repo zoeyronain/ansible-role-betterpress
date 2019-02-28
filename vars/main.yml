@@ -1,0 +1,10 @@
+---
+# vars file for role-betterpress
+domainShort: bettersite
+fullDomain: bettersite.host
+
+mysqluser: "root" # Root MySQL user
+mysqlpassword: "" # Should be blank unless you're already running a database
+mysqlHost: "127.0.0.1" # MySQL DB IP address - should be 127.0.0.1
+db_password: "changeme" # MySQL password for site database
+caching: True

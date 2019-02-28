@@ -1,4 +1,8 @@
 ---
+  - hosts: 127.0.0.1
+    connection: local
+    sudo: required
+
 # tasks file for role-betterpress
 
   - import_tasks: aptConfig.yaml

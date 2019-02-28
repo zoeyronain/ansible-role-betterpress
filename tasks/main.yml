@@ -5,6 +5,7 @@
   - import_tasks: aptInstall.yaml
   - import_tasks: yumConfig.yaml
   - import_tasks: yumInstall.yaml
+  - import_tasks: dnfInstall.yaml
   - import_tasks: cloudflare.yaml
   - import_tasks: firewall.yaml
   - import_tasks: mysql.yaml

@@ -1,0 +1,58 @@
+---
+
+  - name: install packages
+    when: (ansible_distribution == "Fedora")
+    dnf:
+      name:
+        - 'nginx'
+        - 'php'
+        - 'php-mysqlnd'
+        - 'php-fpm'
+        - 'php-cli'
+        - 'php-gd'
+        - 'php-json'
+        - 'php-mbstring'
+        - 'php-mcrypt'
+        - 'php-readline'
+        - 'php-xml'
+        - 'php-zip'
+        - 'python-pip'
+        - 'mariadb-server'
+        - 'mariadb'
+        - 'MySQL-python'
+        - 'libselinux-python'
+        - 'unzip'
+        - 'firewalld'
+      state: present
+
+
+    register: task_result
+    until: task_result is success
+    retries: 10
+    delay: 2
+
+  - name: install caching
+    when: (caching == True and ansible_distribution == "Fedora")
+    dnf:
+      name: memcached
+      state: present
+    register: task_result
+    until: task_result is success
+    retries: 10
+    delay: 2
+
+  - name: install certbot
+    when: (cfapi is defined and ansible_distribution == "Fedora")
+    dnf:
+      name: certbot
+      state: present
+    register: task_result
+    until: task_result is success
+    retries: 10
+    delay: 2
+
+  - name: enable Firewalld
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    service:
+      name: firewalld
+      state: started

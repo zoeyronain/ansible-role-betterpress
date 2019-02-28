@@ -7,7 +7,7 @@ env:
     run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
 
   - distro: ubuntu1804
-    init: /usr/sbin/init
+    init: /sbin/init
     run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
 
 

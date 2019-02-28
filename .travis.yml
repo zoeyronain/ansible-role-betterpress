@@ -8,11 +8,13 @@ env:
     init: /usr/lib/systemd/systemd
     run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
 
-
+before_install:
+  - 'sudo apt-get install ansible python-pip'
+  - 'pip install git+https://github.com/larsks/ansible-toolbox'
 
 
 script:
-  - 'sudo apt-get install ansible'
+
   # Ansible syntax check.
   - 'sudo ansible-playbook -c local -i hosts ./tasks/main.yml --syntax-check'
 

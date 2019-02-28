@@ -1,16 +1,16 @@
 ---
-- hosts: 127.0.0.1
-  connection: local
-  sudo: required
+  - hosts: 127.0.0.1
+    connection: local
+    sudo: required
 
-  pre_tasks:
-  - name: Update apt cache.
-    apt: update_cache=yes
-    when: ansible_os_family == 'Debian'
+    pre_tasks:
+    - name: Update apt cache.
+      apt: update_cache=yes
+      when: ansible_os_family == 'Debian'
 
-  - name: Ensure build dependencies are installed (RedHat).
-    package: name=which state=present
-    when: ansible_os_family == 'RedHat'
+    - name: Ensure build dependencies are installed (RedHat).
+      package: name=which state=present
+      when: ansible_os_family == 'RedHat'
 
-  roles:
-    - zoeycluff.betterpress
+    roles:
+      - zoeycluff.betterpress

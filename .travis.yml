@@ -10,18 +10,18 @@ env:
 
 before_install:
   - 'sudo apt-get update'
-  - 'sudo apt-get dist-upgrade'
-  - 'sudo apt-get install ansible python-pip'
+  - 'sudo apt-get dist-upgrade -y'
+  - 'sudo apt-get install ansible python-pip -y'
   - 'pip install git+https://github.com/larsks/ansible-toolbox'
 
 
 script:
 
   # Ansible syntax check.
-  - 'sudo ansible-playbook -c local -i hosts ./tasks/main.yml --syntax-check'
+  - 'sudo ansible-role -c local -i hosts ./tasks/main.yml --syntax-check'
 
   # Test role.
-  - 'sudo ansible-playbook --c local -i hosts  ./tasks/main.yml'
+  - 'sudo ansible-role --c local -i hosts  ./tasks/main.yml'
 
 
   - 'sudo curl 127.0.0.1'

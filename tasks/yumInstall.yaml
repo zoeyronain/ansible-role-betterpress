@@ -22,6 +22,7 @@
         - 'MySQL-python'
         - 'libselinux-python'
         - 'unzip'
+        - 'firewalld'
       state: present
 
 
@@ -49,3 +50,9 @@
     until: task_result is success
     retries: 10
     delay: 2
+
+  - name: enable Firewalld
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    service:
+      name: firewalld
+      state: started

@@ -21,6 +21,7 @@
         - libmysqlclient-dev
         - python-mysqldb
         - unzip
+        - ufw
       state: present
 
     register: task_result
@@ -47,3 +48,9 @@
     until: task_result is success
     retries: 10
     delay: 2
+
+  - name: enable UFW
+    when: (ansible_distribution == "Ubuntu" or ansible_distribution == "Debian")
+    service:
+      name: ufw
+      state: started

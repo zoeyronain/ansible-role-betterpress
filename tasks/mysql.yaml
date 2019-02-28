@@ -7,6 +7,13 @@
       state: started
       enabled: yes
 
+  - name: start MySQL
+    when: (ansible_distribution == "Ubuntu" or ansible_distribution == "Debian")
+    service:
+      name: mysql
+      state: started
+      enabled: yes
+
 
   - name: Create a new database
     mysql_db:

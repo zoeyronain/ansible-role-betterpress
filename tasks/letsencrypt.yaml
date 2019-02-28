@@ -1,6 +1,6 @@
 ---
   - name: stop NGINX
-    sysvinit:
+    service:
       name: nginx
       state: stopped
 

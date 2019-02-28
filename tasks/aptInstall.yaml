@@ -22,6 +22,7 @@
         - python-mysqldb
         - unzip
         - ufw
+        - dbus
       state: present
 
     register: task_result

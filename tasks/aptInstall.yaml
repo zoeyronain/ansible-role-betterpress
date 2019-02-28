@@ -52,7 +52,7 @@
 
   - name: enable UFW
     when: (ansible_distribution == "Ubuntu" or ansible_distribution == "Debian")
-    svinit:
+    sysvinit:
       name: ufw
       state: started
       enabled: yes

@@ -1,13 +1,13 @@
 ---
   - name: start NGINX
-    svinit:
+    sysvinit:
       name: nginx
       state: started
       enabled: yes
 
   - name: start PHP for Debian based OS
     when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
-    svinit:
+    sysvinit:
       name: php7.3-fpm
       state: started
       enabled: yes

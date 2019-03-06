@@ -16,7 +16,7 @@ services:
 
 before_install:
   # Pull container.
-  - 'sudo docker pull zoeykitten/betterpress-${distro}-ansible:latest'
+  - 'sudo docker pull zoeykitten/betterpress-${distro}-ansible:1'
 
 script:
   - container_id=$(mktemp)

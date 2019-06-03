@@ -17,20 +17,22 @@
       src: ../configs/wp-config-sample.php.j2
       dest: "/var/www/{{ fullDomain }}/wp-config.php"
 
+# DO NOT include the .zip extension at the end of the items you put here!
+
   - name: install basic plugins
     unarchive:
-      src: "{{ item }}"
+      src: "https://downloads.wordpress.org/plugin/{{ item }}.zip"
       dest: "/var/www/{{ fullDomain }}/wp-content/plugins"
       remote_src: yes
       owner: www-data
       group: www-data
     with_items:
-      - https://downloads.wordpress.org/plugin/gutenberg.zip
-      - https://downloads.wordpress.org/plugin/akismet.zip
-      - https://downloads.wordpress.org/plugin/wordfence.zip
-      - https://downloads.wordpress.org/plugin/wordpress-seo.zip
-      - https://downloads.wordpress.org/plugin/jetpack.zip
-      - https://downloads.wordpress.org/plugin/vaultpress.zip
+      - gutenberg
+      - akismet
+      - wordfence
+      - wordpress-seo
+      - jetpack
+      - vaultpress
 
 
   - name: fix file permissions

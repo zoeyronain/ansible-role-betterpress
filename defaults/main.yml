@@ -1,2 +1,4 @@
 ---
 # defaults file for role-betterpress
+  ansible_unit_test: False
+  prefix_dir: ""

@@ -22,7 +22,6 @@
         - 'python-mysqldb'
         - 'unzip'
         - 'ufw'
-
       state: present
 
     register: task_result

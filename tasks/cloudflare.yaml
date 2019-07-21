@@ -8,7 +8,7 @@
       value: "{{ ipv4 }}"
       account_email: "{{ cfemail }}"
       account_api_token: "{{ cfapi }}"
-    when: (cfapi is defined)
+    when: (cfapi is defined and state is absent)
 
   - name: ipv4 DNS
     cloudflare_dns:
@@ -18,7 +18,7 @@
       value: "{{ ipv4 }}"
       account_email: "{{ cfemail }}"
       account_api_token: "{{ cfapi }}"
-    when: (cfapi is defined)
+    when: (cfapi is defined and state is absent)
 
   - name: ipv6 DNS
     cloudflare_dns:
@@ -28,7 +28,7 @@
       value: "{{ ipv6 }}"
       account_email: "{{ cfemail }}"
       account_api_token: "{{ cfapi }}"
-    when: (cfapi is defined and ipv6 is defined)
+    when: (cfapi is defined and ipv6 is defined and state is absent)
 
   - name: ipv6 www DNS
     cloudflare_dns:
@@ -38,4 +38,4 @@
       value: "{{ ipv6 }}"
       account_email: "{{ cfemail }}"
       account_api_token: "{{ cfapi }}"
-    when: (cfapi is defined and ipv6 is defined)
+    when: (cfapi is defined and ipv6 is defined and state is absent)

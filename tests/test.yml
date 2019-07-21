@@ -3,6 +3,11 @@
     connection: local
     sudo: required
 
+    tags:
+      - CI
+    vars:
+        ansible_unit_test: True
+        
     pre_tasks:
     - name: Update apt cache.
       apt: update_cache=yes

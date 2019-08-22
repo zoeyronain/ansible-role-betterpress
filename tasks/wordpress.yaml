@@ -38,7 +38,7 @@
   - name: fix file permissions
     shell:
       chdir: "/var/www/{{ fullDomain }}"
-      cmd: find . -type f -exec chmod 664 {} +
+      cmd: find . -type f -exec chmod 644 {} +
 
   - name: fix folder permissions
     shell:

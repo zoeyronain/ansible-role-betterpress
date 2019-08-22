@@ -43,4 +43,4 @@
   - name: fix folder permissions
     shell:
       chdir: "/var/www/{{ fullDomain }}"
-      cmd: find . -type d -exec chmod 775 {} +
+      cmd: find . -type d -exec chmod 755 {} +

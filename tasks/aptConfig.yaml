@@ -1,7 +1,7 @@
 ---
 
   - name: check if ondrej PPA exists
-    when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+    when: ( ansible_distribution == "Ubuntu")
     stat:
       path: /etc/apt/sources.list.d/ppa_ondrej_php_cosmic.list
     register: PPAExists
@@ -11,6 +11,18 @@
       repo: 'ppa:ondrej/php'
       state: present
     when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and not PPAExists.stat.exists )
+
+  - name: check if Sury PPA exists
+    when: (ansible_distribution == "Debian")
+    stat:
+      path: /etc/apt/sources.list.d/ppa_ondrej_php_cosmic.list
+    register: DebianPPAExists
+
+  - name: install Sury PPA
+    when: (ansible_distribution == "Debian" and DebianPPAExists.stat.exists)
+    apt_repository:
+      repo: deb https://packages.sury.org/php/ $(lsb_release -sc) main
+      state: present
 
   - name: update cache
     when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")

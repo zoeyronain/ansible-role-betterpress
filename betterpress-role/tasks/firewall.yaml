@@ -18,7 +18,7 @@
       immediate: yes
 
   - name: start & enable firewall
-    when: (firewall is defined and firewall == True and ansible_distribution == "Ubuntu or ansible_distribution == "Debian")
+    when: (ansible_distribution == "Ubuntu" or ansible_distribution == "Debian" and firewall == True)
     service:
       name: ufw
       state: started

@@ -1,22 +1,6 @@
 - name: betterpress
   hosts: 127.0.0.1
 
-  tasks:
-    - name: see if the roles folder exists where ansible expects it
-      stat:
-        path: /etc/ansible/roles
-      register: missingAnsibleFolder
-
-    - name: create roles folder if it doesn't already exists
-      file:
-        path: /etc/ansible/roles/
-        state: directory
-      when: not missingAnsibleFolder.stat.exists
-
-    - name: copy betterpress folder to the roles folder
-      copy:
-        src: ./betterpress-role
-        dest: /etc/ansible/roles
 
   roles:
-    - ansible-role-betterpress
+    - './betterpress-role'

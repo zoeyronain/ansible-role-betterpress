@@ -31,16 +31,6 @@
     retries: 10
     delay: 2
 
-  - name: install caching
-    when: (caching == True and ansible_distribution == "EL" or ansible_distribution == "CentOS")
-    yum:
-      name: memcached
-      state: present
-    register: task_result
-    until: task_result is success
-    retries: 10
-    delay: 2
-
   - name: install certbot
     when: (leEmail is defined and ansible_distribution == "EL" or ansible_distribution == "CentOS")
     yum:

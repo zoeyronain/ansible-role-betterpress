@@ -1,0 +1,83 @@
+---
+  - name: ensure ssl dhparam exists
+    stat:
+      path: /etc/nginx/ssl/dhparam.pem
+    register: missingdhparam
+
+  - name: ensure ssl folder exists
+    file:
+      path: /etc/nginx/ssl/
+      state: directory
+    when: not missingdhparam.stat.exists
+
+  - name: generate dhprams
+    shell: openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
+    when: not missingdhparam.stat.exists
+
+  - name: make nginx.conf.d folder
+    file:
+      path: "/etc/nginx/conf.d"
+      state: directory
+
+
+  - name: create group for EL based OS
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    group:
+      name: www-data
+      state: present
+
+  - name: create user and group for nginx on CentOS based OS
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    user:
+      name: www-data
+      comment: nginx
+      group: www-data
+
+  - name: Create /run/php folder
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    file:
+      path: "/run/php"
+      state: directory
+
+  - name: create www folder
+    file:
+      path: "/var/www/{{ fullDomain }}"
+      state: directory
+      mode: 0755
+      owner: www-data
+      group: www-data
+
+  - name: create snippets folder
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    file:
+      path: "/etc/nginx/snippets"
+      state: directory
+
+  - name: copy php config for php-fpm
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    copy:
+      src: fastcgi.conf
+      dest: "/etc/nginx/snippets/fastcgi-php.conf"
+
+  - name: copy php config for php-fpm
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    copy:
+      src: www.conf
+      dest: "/etc/php-fpm.d/www.conf"
+
+  - name: install NGINX config for HTTP only site
+    when: (leEmail is not defined)
+    template:
+      src: nginxHTTPconfig.conf.j2
+      dest: "/etc/nginx/conf.d/{{ fullDomain }}.conf"
+
+  - name: install NGINX config for HTTPS site
+    when: (leEmail is defined)
+    template:
+      src: nginxHTTPSconfig.conf.j2
+      dest: "/etc/nginx/conf.d/{{ fullDomain }}.conf"
+
+  - name: install NGINX config
+    copy:
+      src: nginx.conf
+      dest: "/etc/nginx/nginx.conf"

@@ -2,11 +2,11 @@
 # vars file for role-betterpress
 domainShort: bettersite
 fullDomain: bettersite.host
-leEmail: '(Email for LetsEncrypt renewal Notices (you shouldn't get one if all goes well, but its a good way to know if something gets screwed up before your site goes offline))'
-cfapi: '(Cloudflare API key - this needs to be your GLOBAL api key, a limited one won't work) (not sure why)'
-cfemail: '(Cloudflare email address)'
-ipv4: '(Server IPV4 Address)'
-ipv6: '(Server IPV6 Address)'
+leEmail: '' # email to send renewal notices to if for some reason autorenewal fails
+cfapi: '' # Cloudflare API key - this needs to be your GLOBAL api key, a limited one won't work (not sure why)
+cfemail: '' # (Cloudflare email address)
+ipv4: '' # Server's IPV4 address
+ipv6: '' #  (Server IPV6 Address)
 LetsEncrypt: 'Production'  # Production: use for live sites, Testing: use for testing things out (but will cause Certificate errors in your browser) - Case sensitive
 firewall: True #Enable the builtin UFW firewall, change to False if you don't want to use it
 

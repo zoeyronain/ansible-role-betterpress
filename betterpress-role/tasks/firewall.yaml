@@ -17,6 +17,13 @@
       state: enabled
       immediate: yes
 
+  - name: start & enable firewall
+    when: (firewall is defined and firewall == True and ansible_distribution == "Ubuntu or ansible_distribution == "Debian")
+    service:
+      name: ufw
+      state: started
+      enabled: yes
+
   - name: open http on firewall
     when: (ansible_distribution == "Ubuntu" or ansible_distribution == "Debian")
     ufw:

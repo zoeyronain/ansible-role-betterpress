@@ -1,0 +1,4 @@
+- name: betterpress
+  hosts: 127.0.0.1
+  roles:
+    - ansible-role-betterpress

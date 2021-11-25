@@ -15,11 +15,11 @@
         - 'php-readline'
         - 'php-xml'
         - 'php-zip'
-        - 'python-pip'
+        - 'python3-pip'
         - 'mysql-server'
         - 'mysql-client'
         - 'libmysqlclient-dev'
-        - 'python-mysqldb'
+        - 'python3-mysqldb'
         - 'unzip'
         - 'ufw'
 

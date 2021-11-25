@@ -1,0 +1,46 @@
+---
+  - name: extract Wordpress
+    unarchive:
+      src: https://wordpress.org/latest.tar.gz
+      dest: "/var/www/{{ fullDomain }}"
+      remote_src: yes
+      extra_opts: [--strip-components=1]
+      owner: www-data
+      group: www-data
+
+  - name: fetch random salts for Wordpress config
+    shell: command curl https://api.wordpress.org/secret-key/1.1/salt
+    register: "wp_salt"
+
+  - name: install Wordpress config
+    template:
+      src: ../configs/wp-config-sample.php.j2
+      dest: "/var/www/{{ fullDomain }}/wp-config.php"
+
+# DO NOT include the .zip extension at the end of the items you put here!
+
+  - name: install basic plugins
+    unarchive:
+      src: "https://downloads.wordpress.org/plugin/{{ item }}.zip"
+      dest: "/var/www/{{ fullDomain }}/wp-content/plugins"
+      remote_src: yes
+      owner: www-data
+      group: www-data
+    with_items:
+      - gutenberg
+      - akismet
+      - wordfence
+      - wordpress-seo
+      - jetpack
+      - vaultpress
+
+
+  - name: fix file permissions
+    shell:
+      chdir: "/var/www/{{ fullDomain }}"
+      cmd: find . -type f -exec chmod 644 {} +
+
+  - name: fix folder permissions
+    shell:
+      chdir: "/var/www/{{ fullDomain }}"
+      cmd: find . -type d -exec chmod 755 {} +

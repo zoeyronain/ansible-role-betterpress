@@ -1,0 +1,41 @@
+
+server {
+         client_max_body_size 100m;
+         root /var/www/{{ fullDomain }};
+         index index.php index.html index.htm;
+         listen 80;
+         listen   [::]:80;
+
+        # Make site accessible from http://localhost/
+        server_name {{ fullDomain }} www.{{ fullDomain }} default_server;
+
+        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+
+                try_files $uri $uri/ /index.php?$args;
+                # Uncomment to enable naxsi on this location
+                # include /etc/nginx/naxsi.rules
+        }
+
+
+
+        location ~ /.well-known {
+                allow all;
+        }
+
+        #error_page 404 /404.html;
+
+
+        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+           location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass 127.0.0.1:9000;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+
+
+}

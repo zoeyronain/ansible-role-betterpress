@@ -1,28 +1,12 @@
 ---
 
-  - name: check if ondrej PPA exists
-    when: ( ansible_distribution == "Ubuntu")
-    stat:
-      path: /etc/apt/sources.list.d/ppa_ondrej_php_cosmic.list
-    register: PPAExists
-
-  - name: allow installation of PHP 7.3 on ubuntu 18.04
+  - name: add ondrej's php ppa
+    when: (ansible_distribution == "Ubuntu" or ansible_distribution == "Debian")
     apt_repository:
       repo: 'ppa:ondrej/php'
       state: present
-    when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" and not PPAExists.stat.exists )
+      update_cache: True
 
-  - name: check if Sury PPA exists
-    when: (ansible_distribution == "Debian")
-    stat:
-      path: /etc/apt/sources.list.d/ppa_ondrej_php_cosmic.list
-    register: DebianPPAExists
-
-  - name: install Sury PPA
-    when: (ansible_distribution == "Debian" and DebianPPAExists.stat.exists)
-    apt_repository:
-      repo: deb https://packages.sury.org/php/ $(lsb_release -sc) main
-      state: present
 
   - name: update cache
     when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")

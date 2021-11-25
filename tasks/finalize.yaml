@@ -8,7 +8,7 @@
   - name: start PHP for Debian based OS
     when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
     service:
-      name: php7.4-fpm
+      name: php-fpm
       state: started
       enabled: yes
 

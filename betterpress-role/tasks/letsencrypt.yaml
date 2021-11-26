@@ -8,13 +8,13 @@
     shell: certbot certonly --agree-tos -a standalone -m {{ leEmail }} -d {{ fullDomain }} -d www.{{ fullDomain }}
     args:
       creates: /etc/letsencrypt/live/{{ fullDomain }}
-    when: (LetsEncrypt is defined and LetsEncrypt == "Production" and leEmail is defined and cfapi is defined)
+    when: (LetsEncrypt == "Production" and cfapi is defined)
 
   - name: generate staging letsencrypt certificate
     shell: certbot certonly --agree-tos -a standalone --staging -m {{ leEmail }} -d {{ fullDomain }} -d www.{{ fullDomain }}
     args:
       creates: /etc/letsencrypt/live/{{ fullDomain }}
-    when: (LetsEncrypt is defined and LetsEncrypt == "Testing" and leEmail is defined and cfapi is defined)
+    when: (LetsEncrypt == "Testing" and cfapi is defined)
 
   - name: add LetsEncrypt cronjob for renewal
     cron:

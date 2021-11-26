@@ -63,3 +63,9 @@
     copy:
       src: nginx.conf
       dest: "/etc/nginx/nginx.conf"
+
+  - name: start NGINX
+    service:
+      name: nginx
+      state: started
+      enabled: yes

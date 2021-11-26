@@ -1,0 +1,16 @@
+---
+
+  - name: open http on firewall
+    firewalld:
+      service: http
+      permanent: true
+      state: enabled
+      immediate: yes
+
+  - name: open https on firewall
+    when: (leEmail is defined)
+    firewalld:
+      service: https
+      permanent: true
+      state: enabled
+      immediate: yes

@@ -1,7 +1,6 @@
 ---
 
   - name: install packages
-    when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
     apt:
       name:
         - 'nginx'
@@ -32,7 +31,7 @@
 
 
   - name: install certbot
-    when: (leEmail is defined and ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+    when: (leEmail is defined)
     apt:
       name: certbot
       state: present

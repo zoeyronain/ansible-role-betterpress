@@ -1,7 +1,6 @@
 ---
 
   - name: install EPEL
-    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
     yum:
       name: epel-release
       state: present
@@ -11,7 +10,6 @@
     delay: 2
 
   - name: install remi repo
-    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
     yum:
       name: http://rpms.remirepo.net/enterprise/remi-release-8.rpm
       state: present
@@ -21,7 +19,6 @@
     delay: 2
 
   - name: install yum-utils
-    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
     yum:
       name: yum-utils
       state: present
@@ -31,7 +28,6 @@
     delay: 2
 
   - name: update system
-    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
     yum: name=* state=latest
     register: task_result
     until: task_result is success
@@ -39,5 +35,4 @@
     delay: 2
 
   - name: enable remi-php8
-    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
     shell: yum-config-manager --enable remi-php80

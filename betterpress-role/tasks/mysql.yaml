@@ -1,14 +1,14 @@
 ---
 
   - name: start Mariadb
-    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    when: (ansible_os_family == "Redhat")
     service:
       name: mariadb
       state: started
       enabled: yes
 
   - name: start MySQL
-    when: (ansible_distribution == "Ubuntu" or ansible_distribution == "Debian")
+    when: (ansible_os_family == "Debian")
     service:
       name: mysql
       state: started

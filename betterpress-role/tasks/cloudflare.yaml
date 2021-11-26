@@ -8,6 +8,7 @@
       value: "{{ ipv4 }}"
       account_email: "{{ cfemail }}"
       account_api_token: "{{ cfapi }}"
+      state: present
     when: (cfapi is defined)
 
   - name: ipv4 DNS
@@ -18,6 +19,7 @@
       value: "{{ ipv4 }}"
       account_email: "{{ cfemail }}"
       account_api_token: "{{ cfapi }}"
+      state: present
     when: (cfapi is defined)
 
   - name: ipv6 DNS
@@ -28,6 +30,7 @@
       value: "{{ ipv6 }}"
       account_email: "{{ cfemail }}"
       account_api_token: "{{ cfapi }}"
+      state: present
     when: (cfapi is defined and ipv6 is defined)
 
   - name: ipv6 www DNS
@@ -38,4 +41,5 @@
       value: "{{ ipv6 }}"
       account_email: "{{ cfemail }}"
       account_api_token: "{{ cfapi }}"
+      state: present
     when: (cfapi is defined and ipv6 is defined)

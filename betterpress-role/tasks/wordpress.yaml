@@ -1,4 +1,9 @@
 ---
+  - name: check if wordpress already exists in desired folder (to prevent overwriting)
+    stat:
+      path: "/var/www/{{ fullDomain }}/wp-config.php"
+    register: wordpressExists
+
   - name: extract Wordpress
     unarchive:
       src: https://wordpress.org/latest.tar.gz
@@ -7,15 +12,18 @@
       extra_opts: [--strip-components=1]
       owner: www-data
       group: www-data
+    when: not wordpressExists.stat.exists
 
   - name: fetch random salts for Wordpress config
     shell: command curl https://api.wordpress.org/secret-key/1.1/salt
     register: "wp_salt"
+    when: not wordpressExists.stat.exists
 
   - name: install Wordpress config
     template:
       src: ../configs/wp-config-sample.php.j2
       dest: "/var/www/{{ fullDomain }}/wp-config.php"
+    when: not wordpressExists.stat.exists
 
 # DO NOT include the .zip extension at the end of the items you put here!
 
@@ -33,14 +41,27 @@
       - wordpress-seo
       - jetpack
       - vaultpress
+    when: not wordpressExists.stat.exists
 
-
-  - name: fix file permissions
-    shell:
-      chdir: "/var/www/{{ fullDomain }}"
-      cmd: find . -type f -exec chmod 644 {} +
 
   - name: fix folder permissions
-    shell:
-      chdir: "/var/www/{{ fullDomain }}"
-      cmd: find . -type d -exec chmod 755 {} +
+    file:
+      path: "/var/www/{{ fullDomain }}"
+      state: directory
+      recurse: yes
+      mode: '0775'
+    when: not wordpressExists.stat.exists
+
+  - name: find files in wordpress directory to update permissions
+    find:
+     path: "/var/www/{{ fullDomain }}"
+     recurse: yes
+    register: fileList
+    when: not wordpressExists.stat.exists
+
+  - name: fix file permissions
+    file:
+      path: "{{ item.path }}"
+      mode: '0644'
+    with_items: "{{ fileList.files }}"
+    when: not wordpressExists.stat.exists

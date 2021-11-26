@@ -1,10 +1,11 @@
 ---
 # vars file for role-betterpress
+
 domainShort: #domain without suffix (ie betterpress)
 fullDomain:  #domain with suffix ( ie betterpress.com/.net/etc)
 leEmail: '' # email to send renewal notices to if for some reason autorenewal fails, optional but leaves your site insecure
 cfapi: '' # Cloudflare API key - this needs to be your GLOBAL api key, a limited one won't work (not sure why)
-# cfemail: '' # (Cloudflare email address)
+cfemail: '' # (Cloudflare email address)
 ipv4: '' # Server's IPV4 address
 ipv6: '' #  (Server IPV6 Address, optional)
 LetsEncrypt: 'Production'  # Production: use for live sites, Testing: use for testing things out (but will cause Certificate errors in your browser) - Case sensitive

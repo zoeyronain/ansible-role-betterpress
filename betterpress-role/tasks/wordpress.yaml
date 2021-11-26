@@ -52,11 +52,10 @@
       mode: '0775'
     when: not wordpressExists.stat.exists
 
-  - name: find files in wordpress directory to update permissions
-    find:
-     path: "/var/www/{{ fullDomain }}"
-     recurse: yes
-    register: fileList
+  - name: fix folder permissions
+    shell:
+      chdir: "/var/www/{{ fullDomain }}"
+      cmd: find . -type d -exec chmod 755 {} +
     when: not wordpressExists.stat.exists
 
   - name: fix file permissions

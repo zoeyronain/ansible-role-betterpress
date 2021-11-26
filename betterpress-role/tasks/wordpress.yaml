@@ -25,6 +25,10 @@
       dest: "/var/www/{{ fullDomain }}/wp-config.php"
     when: not wordpressExists.stat.exists
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> cleanup
 
 # Do not add .zip to the items in with_items!
   - name: install basic plugins
@@ -43,14 +47,6 @@
       - vaultpress
     when: not wordpressExists.stat.exists
 
-
-  - name: fix folder permissions
-    file:
-      path: "/var/www/{{ fullDomain }}"
-      state: directory
-      recurse: yes
-      mode: '0775'
-    when: not wordpressExists.stat.exists
 
   - name: fix folder permissions
     shell:

@@ -25,7 +25,7 @@
       dest: "/var/www/{{ fullDomain }}/wp-config.php"
     when: not wordpressExists.stat.exists
 
-# DO NOT include the .zip extension at the end of the items you put here!
+
 
   - name: install basic plugins
     unarchive:

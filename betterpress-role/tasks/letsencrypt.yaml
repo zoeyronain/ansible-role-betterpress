@@ -1,15 +1,15 @@
 ---
     - name: generate production letsencrypt certificate
-      shell: certbot certonly --agree-tos -a standalone -m {{ leEmail }} -d {{ fullDomain }} -d www.{{ fullDomain }}
+      shell: 'certbot certonly --agree-tos -a standalone -m {{ leEmail }} -d {{ fullDomain }} -d www.{{ fullDomain }}'
       args:
-        creates: /etc/letsencrypt/live/{{ fullDomain }}
-      when: (LetsEncrypt == "Production" and leEmail is defined)
+        creates: '/etc/letsencrypt/live/{{ fullDomain }}'
+      when: (LetsEncrypt == 'Production' and leEmail is defined)
 
     - name: generate staging letsencrypt certificate
-      shell: certbot certonly --agree-tos -a standalone --staging -m {{ leEmail }} -d {{ fullDomain }} -d www.{{ fullDomain }}
+      shell: 'certbot certonly --agree-tos -a standalone --staging -m {{ leEmail }} -d {{ fullDomain }} -d www.{{ fullDomain }}'
       args:
         creates: /etc/letsencrypt/live/{{ fullDomain }}
-      when: (LetsEncrypt == "Testing" and leEmail is defined)
+      when: (LetsEncrypt == 'Testing' and leEmail is defined)
 
     - name: add LetsEncrypt cronjob for renewal
       cron:
@@ -19,7 +19,7 @@
       when: (leEmail is defined)
 
     - name: start NGINX
-    service:
-      name: nginx
-      state: started
-      enabled: yes
+      service:
+        name: nginx
+        state: started
+        enabled: yes

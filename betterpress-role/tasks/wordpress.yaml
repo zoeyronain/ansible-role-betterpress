@@ -27,6 +27,7 @@
 
 
 
+# Do not add .zip to the items in with_items!
   - name: install basic plugins
     unarchive:
       src: "https://downloads.wordpress.org/plugin/{{ item }}.zip"

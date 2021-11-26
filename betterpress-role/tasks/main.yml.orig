@@ -1,0 +1,36 @@
+---
+
+# tasks file for role-betterpress
+
+  - import_tasks: aptConfig.yaml
+    when: ansible_os_family == 'Debian'
+
+  - import_tasks: aptInstall.yaml
+    when: ansible_os_family == 'Debian'
+
+  - import_tasks: debianFirewall.yaml
+    when: ansible_os_family == 'Debian'
+
+  - import_tasks: yumConfig.yaml
+    when: ansible_os_family == 'RedHat'
+
+  - import_tasks: yumInstall.yaml
+    when: ansible_os_family == 'RedHat'
+
+  - import_tasks: redhatFirewall.yaml
+    when: ansible_os_family == 'Redhat'
+
+  - import_tasks: cloudflare.yaml
+  - import_tasks: mysql.yaml
+  - import_tasks: nginx.yaml
+  - import_tasks: php.yaml
+  - import_tasks: wordpress.yaml
+
+  - import_tasks: letsencrypt.yaml
+    when: (leEmail is defined)
+
+  - import_tasks: finalize.yaml
+<<<<<<< HEAD
+    when: (leEmail is not defined)
+=======
+>>>>>>> 6f9e6ee6a53772348c1541e942268970725d978d

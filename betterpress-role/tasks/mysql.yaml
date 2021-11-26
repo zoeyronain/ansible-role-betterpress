@@ -30,7 +30,7 @@
 
   - name: Create a new database if a database by the same name doesn't already exist
     mysql_db:
-      name: "dbs"
+      name: "{{ domainShort }}"
       login_user: "{{ mysqluser }}"
       login_password: "{{ mysqlpassword }}"
       state: present

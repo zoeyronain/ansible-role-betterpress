@@ -25,8 +25,8 @@
       dest: "/var/www/{{ fullDomain }}/wp-config.php"
     when: not wordpressExists.stat.exists
 
-# DO NOT include the .zip extension at the end of the items you put here!
 
+# Do not add .zip to the items in with_items!
   - name: install basic plugins
     unarchive:
       src: "https://downloads.wordpress.org/plugin/{{ item }}.zip"

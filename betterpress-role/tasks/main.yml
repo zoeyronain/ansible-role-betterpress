@@ -28,3 +28,6 @@
 
   - import_tasks: letsencrypt.yaml
     when: (leEmail is defined)
+
+  - import_tasks: finalize.yaml
+    when: (leEmail is not defined)

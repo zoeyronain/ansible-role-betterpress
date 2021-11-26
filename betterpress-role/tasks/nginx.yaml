@@ -65,7 +65,7 @@
       dest: "/etc/nginx/nginx.conf"
 
 
-  - name: stop NGINX
+  - name: make sure nginx is stopped to generate letsencrypt certs
     service:
       name: nginx
       state: stopped

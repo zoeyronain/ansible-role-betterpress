@@ -4,7 +4,6 @@
       name: nginx
       state: started
       enabled: yes
-      
 
   - name: start PHP for Debian based OS
     when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")

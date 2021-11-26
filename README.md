@@ -8,5 +8,5 @@ This Ansible playbook is meant to be run on a FRESH never used server. It's been
 
 # To Use
 
-* fill out the fields in betterpress-role/vars/main.yaml
+* fill out the fields in betterpress-role/vars/main.yml
 * execute with: ansible-playbook run.yaml

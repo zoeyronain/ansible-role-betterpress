@@ -10,6 +10,7 @@
   - import_tasks: firewall.yaml
   - import_tasks: mysql.yaml
   - import_tasks: nginx.yaml
+  - import_tasks: php.yaml
   - import_tasks: wordpress.yaml
   - import_tasks: letsencrypt.yaml
   - import_tasks: finalize.yaml

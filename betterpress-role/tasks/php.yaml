@@ -1,0 +1,44 @@
+---
+  - name: Create /run/php folder
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    file:
+      path: "/run/php"
+      state: directory
+
+  - name: copy php config for php-fpm
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    copy:
+      src: fastcgi.conf
+
+  - name: copy worker config for php-fpm
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    copy:
+      src: www.conf
+      dest: "/etc/php-fpm.d/www.conf"
+
+  - name: Discover what version of PHP-FPM is installed to change listen address in the proper folder
+    command: php -r 'printf("%d.%d", PHP_MAJOR_VERSION, PHP_MINOR_VERSION);'
+    check_mode: false
+    changed_when: false
+    register: php_version
+
+  - name: update php-fpm/pool.d/www.conf to use a port instead of sockfile
+    lineinfile:
+      path: '/etc/php/{{ php_version.stdout }}/fpm/pool.d/www.conf'
+      regexp: 'listen = /run/php/php{{ php_version.stdout }}-fpm.sock'
+      line: 'listen = 127.0.0.1:9000'
+
+
+  - name: start PHP for Debian based OS
+    when: (ansible_distribution == "Debian" or ansible_distribution == "Ubuntu")
+    service:
+      name: 'php{{ php_version.stdout }}-fpm'
+      state: restarted
+      enabled: yes
+
+  - name: start PHP for CentOS based OS
+    when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
+    service:
+      name: php-fpm
+      state: started
+      enabled: yes

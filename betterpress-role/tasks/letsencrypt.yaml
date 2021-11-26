@@ -21,4 +21,4 @@
       name: letsencrypt_renewal
       special_time: weekly
       job: service nginx stop && certbot renew && service nginx start
-    when: (lsEmail is defined)
+    when: (leEmail is defined)

@@ -14,7 +14,7 @@
       proto: tcp
 
   - name: open https on firewall
-    when: (leEmail is defined && firewall)
+    when: (leEmail is defined and firewall)
     ufw:
       port: '443'
       rule: allow

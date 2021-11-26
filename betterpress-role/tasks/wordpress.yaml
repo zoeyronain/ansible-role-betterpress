@@ -60,8 +60,7 @@
     when: not wordpressExists.stat.exists
 
   - name: fix file permissions
-    file:
-      path: "{{ item.path }}"
-      mode: '0644'
-    with_items: "{{ fileList.files }}"
+    shell:
+      chdir: "/var/www/{{ fullDomain }}"
+      cmd: find . -type f -exec chmod 644 {} +
     when: not wordpressExists.stat.exists

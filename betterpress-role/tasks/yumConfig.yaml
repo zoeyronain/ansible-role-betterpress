@@ -13,7 +13,7 @@
   - name: install remi repo
     when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
     yum:
-      name: http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+      name: http://rpms.remirepo.net/enterprise/remi-release-8.rpm
       state: present
     register: task_result
     until: task_result is success
@@ -38,6 +38,6 @@
     retries: 10
     delay: 2
 
-  - name: enable remi-php73
+  - name: enable remi-php8
     when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
-    shell: yum-config-manager --enable remi-php73
+    shell: yum-config-manager --enable remi-php80

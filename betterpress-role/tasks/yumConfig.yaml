@@ -40,4 +40,4 @@
 
   - name: enable remi-php8
     when: (ansible_distribution == "EL" or ansible_distribution == "CentOS")
-    shell: yum-config-manager --enable remi-php80
+    shell: yum-config-manager --enable remi-php81
